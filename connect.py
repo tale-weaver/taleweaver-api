@@ -26,7 +26,7 @@ if "User" not in db.list_collection_names():
                     "password": {"bsonType": "string"},
                     "email": {"bsonType": "string"},
                     "membership": {"bsonType": "string"},
-                    "collection": {"bsonType": ["objectId"]},
+                    "collection": {"bsonType": "array"},
                 },
             }
         },
@@ -44,9 +44,9 @@ if "Book" not in db.list_collection_names():
                 "required": ["bookname", "page_id", "status", "comment"],
                 "properties": {
                     "bookname": {"bsonType": "string"},
-                    "page_id": {"bsonType": ["objectId"]},
+                    "page_id": {"bsonType": "array"},
                     "status": {"bsonType": "string"},
-                    "comment": {"bsonType": ["objectId"]},
+                    "comment": {"bsonType": "array"},
                 },
             }
         },
