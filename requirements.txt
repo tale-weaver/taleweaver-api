@@ -1,0 +1,7 @@
+Flask
+Flask-RESTful
+pymongo
+Flask-PyMongo
+Flask-Bcrypt
+flask_jwt_extended
+python-dotenv
