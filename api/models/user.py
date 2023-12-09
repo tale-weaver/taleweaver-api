@@ -1,27 +1,69 @@
-from pymongo import MongoClient
-from dotenv import load_dotenv
+from api.utils.db import db
 from flask_bcrypt import Bcrypt
-import os
+from api.utils.time import now
 
-client = MongoClient(os.getenv('MONGO_URL'))
-db = client['mydatabase']
 bcrypt = Bcrypt()
 
 
 class User:
-    def __init__(self, username, password, email, avatar='', verification_code='', is_verified=False):
+    def __init__(self,
+                 username,
+                 password,
+                 email,
+                 source,
+                 role='user',
+                 avatar='',
+                 is_verified=False,
+                 verification_code='',
+                 created_at=now(),
+                 updated_at=now(),
+                 book_ids=[],
+                 comment_ids=[],
+                 liked_book_ids=[],
+                 saved_book_ids=[]
+                 ):
         self.username = username
         self.password_hash = bcrypt.generate_password_hash(
             password).decode('utf-8')
         self.email = email
+        self.source = source
+        self.role = role
         self.avatar = avatar
-        self.verification_code = verification_code
         self.is_verified = is_verified
+        self.verification_code = verification_code
+        self.created_at = created_at
+        self.updated_at = updated_at
+        self.book_ids = book_ids
+        self.comment_ids = comment_ids
+        self.liked_book_ids = liked_book_ids
+        self.saved_book_ids = saved_book_ids
 
     def save(self):
         db.users.insert_one(self.__dict__)
 
     @staticmethod
-    def find_by_username(username, exclude=True):
-        user = db.users.find_one({'username': username}, {'_id': 0})
+    def find_by_username(username, include_keys=[], exclude_keys=[]):
+
+        if include_keys and exclude_keys:
+            projection = {k: 1 for k in include_keys}
+            projection.update({k: 0 for k in exclude_keys})
+            user = db.users.find_one(
+                {'username': username}, projection)
+        elif include_keys:
+            projection = {k: 1 for k in include_keys}
+            user = db.users.find_one(
+                {'username': username}, projection)
+        elif exclude_keys:
+            projection = {k: 0 for k in exclude_keys}
+            user = db.users.find_one(
+                {'username': username}, projection)
+        else:
+            user = db.users.find_one({'username': username})
+
         return user
+
+    @staticmethod
+    def update(user, update_dict):
+        user.update(update_dict)
+        db.users.update_one({'username': user.username}, {
+                            '$set': user.__dict__})
