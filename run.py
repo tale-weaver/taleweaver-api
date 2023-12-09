@@ -4,7 +4,7 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
-from api.resources.user import Signup, UserResource
+from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials
 from api.utils.json_encoder import MongoJSONProvider, MongoJSONEncoder
 from api.config.config import Config
 
@@ -31,7 +31,10 @@ JWTManager(app)
 
 api = Api(app)
 api.add_resource(Signup, '/user/signup')
-api.add_resource(UserResource, '/user/<username>')
+api.add_resource(ResendVerificationEmail, '/user/resend_verification_email')
+api.add_resource(VerifyEmail, '/user/verify')
+api.add_resource(LoginWithCredentials, '/user/login_with_credentials')
+api.add_resource(UserResource, '/user')
 
 
 if __name__ == '__main__':

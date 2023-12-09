@@ -42,6 +42,28 @@ class User:
         db.users.insert_one(self.__dict__)
 
     @staticmethod
-    def find_by_username(username):
-        user = db.users.find_one({'username': username})
+    def find_by_username(username, include_keys=[], exclude_keys=[]):
+
+        if include_keys and exclude_keys:
+            projection = {k: 1 for k in include_keys}
+            projection.update({k: 0 for k in exclude_keys})
+            user = db.users.find_one(
+                {'username': username}, projection)
+        elif include_keys:
+            projection = {k: 1 for k in include_keys}
+            user = db.users.find_one(
+                {'username': username}, projection)
+        elif exclude_keys:
+            projection = {k: 0 for k in exclude_keys}
+            user = db.users.find_one(
+                {'username': username}, projection)
+        else:
+            user = db.users.find_one({'username': username})
+
         return user
+
+    @staticmethod
+    def update(user, update_dict):
+        user.update(update_dict)
+        db.users.update_one({'username': user.username}, {
+                            '$set': user.__dict__})
