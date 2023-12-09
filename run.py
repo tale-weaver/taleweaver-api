@@ -10,6 +10,7 @@ from api.resources.page import pageUploadConfirm
 app = Flask(__name__)
 api = Api(app)
 app.config['JWT_SECRET_KEY'] = 'tw'  # Change this!
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 jwt = JWTManager(app)
 
 

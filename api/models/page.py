@@ -40,11 +40,11 @@ class Page:
     def find_pages_by_bookid(book_id):
         pipeline = [
             {"$match": {"_id": book_id}},
-            {"$unwind": "$page_id"},
+            {"$unwind": "$page_ids"},
             {
                 "$lookup": {
                     "from": "pages",
-                    "localField": "page_id",
+                    "localField": "page_ids",
                     "foreignField": "_id",
                     "as": "pages",
                 }
@@ -53,10 +53,10 @@ class Page:
             {
                 "$project": {
                     "_id": 0,
-                    "bookname": 1,
+                    "title": 1,
                     "pages.image": 1,
                     "pages.description": 1,
-                    "pages.creator": 1,
+                    "pages.creator_id": 1,
                 }
             },
         ]
@@ -68,8 +68,11 @@ class Page:
         return page
 
     def find_cover_by_bookid(book_id):
-        cover = db.books.find_one({"_id": book_id}, {"_id": 0})[0]
-        return cover
+        book = db.books.find_one({"_id": book_id}, {"_id": 0, "page_ids": 1})
+        if book and 'page_ids' in book:
+            return book['page_ids'][0]
+        else:
+            return None
 
     def save_as_fk(book_id, page_id):
         book = db.books.update_one({"_id": book_id}, {"$push": {"page_id": page_id}})

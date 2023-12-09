@@ -47,6 +47,10 @@ class Book:
         book = db.books.find({})
         return book
     
+    def find_all_books_by_status(status):
+        book = db.books.find({"status": status})
+        return book
+    
     def push_new_page(book_id, page_id):
         book = db.books.update_one({"_id": book_id}, {"$push": {"page_ids": page_id}})
         return book
@@ -58,3 +62,19 @@ class Book:
     def saved_by_user(book_id, user_id):
         book = db.books.update_one({"_id": book_id}, {"$push": {"saved_by_user_ids": user_id}})
         return book
+    
+    def update_status_by_bookid(book_id, status):
+        book = db.books.update_one({"_id": book_id}, {"$set": {"status": status}})
+        return book
+    
+    def remove_like_by_user(book_id, user_id):
+        book = db.books.update_one({"_id": book_id}, {"$pull": {"liked_by_user_ids": user_id}})
+        return book
+    
+    def remove_save_by_user(book_id, user_id):
+        book = db.books.update_one({"_id": book_id}, {"$pull": {"saved_by_user_ids": user_id}})
+        return book
+
+    
+    
+    
