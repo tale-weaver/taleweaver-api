@@ -1,10 +1,8 @@
 from pymongo import MongoClient
-from dotenv import load_dotenv
-
+from api.utils.time import now
 import os
+from api.utils.db import db
 
-client = MongoClient(os.getenv("MONGO_URL"))
-db = client["mydatabase"]
 
 
 class Page:
@@ -15,9 +13,9 @@ class Page:
         book_id,
         interval_id,
         creator_id,
-        voted_by_user_ids,
-        created_at,
-        updated_at,
+        voted_by_user_ids = [],
+        created_at = now(),
+        updated_at = now(),
         status='ongoing',
     ):
         # if not all([image, description, book_id, interval_id, creator_id, created_at]):

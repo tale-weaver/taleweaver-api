@@ -14,7 +14,7 @@ class pageUploadConfirm(Resource):
         text_description = data['text_description']
         creator_id = data['creator']
         
-        if not book_id or not  file or not text_description or not creator_id:
+        if not book_id or not file or not text_description or not creator_id:
             return {'msg': 'Missing fields'}, 400
 
         bookname = Book.find_by_bookid(book_id)['bookname']

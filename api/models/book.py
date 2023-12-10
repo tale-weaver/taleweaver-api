@@ -1,24 +1,20 @@
 from pymongo import MongoClient
-from dotenv import load_dotenv
-
+from api.utils.db import db
+from api.utils.time import now
 import os
-
-client = MongoClient(os.getenv("MONGO_URL"))
-db = client["mydatabase"]
-
 
 class Book:
     def __init__(
+        status,
         self,
         title,
-        page_ids,
-        status,
-        comment_ids,
-        liked_by_user_ids,
-        saved_by_user_ids,
-        interval_ids,
-        created_at,
-        updated_at,
+        page_ids = [],
+        comment_ids = [],
+        liked_by_user_ids = [],
+        saved_by_user_ids = [],
+        interval_ids = [],
+        created_at = now(),
+        updated_at = now(),
     ):
         self.title = title
         self.page_ids = page_ids
