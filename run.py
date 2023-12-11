@@ -10,6 +10,7 @@ from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, Use
 from api.utils.json_encoder import MongoJSONProvider, MongoJSONEncoder
 from api.config.config import Config
 from api.resources.getImage import StaticImage
+from api.utils.initdb import initialize_data
 import os
 
 
@@ -48,6 +49,7 @@ api.add_resource(VerifyEmail, '/user/verify')
 api.add_resource(LoginWithCredentials, '/user/login_with_credentials')
 api.add_resource(UserResource, '/user')
 
-
 if __name__ == '__main__':
+    with app.app_context():    
+        initialize_data()
     app.run()
