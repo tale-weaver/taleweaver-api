@@ -1,10 +1,19 @@
 from api.models.book import Book
 from api.models.page import Page
 from api.utils.time import now
+from api.utils.db import db
 from flask import current_app as app
 import os
+import pymongo
 
 def initialize_data():
+        list_of_collections = db.list_collection_names()
+        if 'books' in list_of_collections:
+            db.books.drop()
+            print('books dropped')
+        if 'pages' in list_of_collections:
+            db.pages.drop()
+            print('pages dropped')
         book1 = Book(title='book1', status='submitting', created_at=now())
         book2 = Book(title='book2', status='submitting', created_at=now())
         book1.save()
