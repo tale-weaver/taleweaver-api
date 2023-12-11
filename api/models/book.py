@@ -1,13 +1,11 @@
-from pymongo import MongoClient
 from api.utils.db import db
 from api.utils.time import now
-import os
 
 class Book:
     def __init__(
-        status,
         self,
         title,
+        status="submitting",
         page_ids = [],
         comment_ids = [],
         liked_by_user_ids = [],
@@ -40,7 +38,7 @@ class Book:
         return book
 
     def find_all_books():
-        book = db.books.find({})
+        book = db.books.find()
         return book
     
     def find_all_books_by_status(status):

@@ -1,7 +1,6 @@
-from pymongo import MongoClient
 from api.utils.time import now
-import os
 from api.utils.db import db
+import os
 
 
 
@@ -68,7 +67,7 @@ class Page:
     def find_cover_by_bookid(book_id):
         book = db.books.find_one({"_id": book_id}, {"_id": 0, "page_ids": 1})
         if book and 'page_ids' in book:
-            return book['page_ids'][0]
+            return book.page_ids[0]
         else:
             return None
 
@@ -77,7 +76,7 @@ class Page:
         return book
 
     def find_creator_by_id(page_id):
-        creator_id = db.pages.find_one({"_id": page_id})["creator"]
+        creator_id = db.pages.find_one({"_id": page_id})["creator_id"]
         creator = db.users.find_one({"_id": creator_id})["username"]
         return creator
     
