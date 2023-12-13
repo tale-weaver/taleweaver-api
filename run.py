@@ -2,8 +2,8 @@
 from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
-from api.resources.book import AllStory, SingleBook
-from api.resources.page import PageUploadConfirm
+from api.resources.book import AllStory, SingleBook, LikeBook
+from api.resources.page import PageUploadConfirm, VotePage
 from flask_mail import Mail
 
 from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials
@@ -43,6 +43,8 @@ api.add_resource(StaticImage, '/data/<filename>')
 api.add_resource(AllStory, '/story')
 api.add_resource(PageUploadConfirm, '/story/upload/<book_id>')
 api.add_resource(SingleBook, '/story/<book_id>')
+api.add_resource(VotePage, '/story/<page_id>/vote')
+api.add_resource(LikeBook, '/story/<book_id>/like')
 api.add_resource(Signup, '/user/signup')
 api.add_resource(ResendVerificationEmail, '/user/resend_verification_email')
 api.add_resource(VerifyEmail, '/user/verify')
