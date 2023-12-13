@@ -5,4 +5,5 @@ Flask-PyMongo
 Flask-Bcrypt
 flask_jwt_extended
 python-dotenv
+werkzeug
 Flask-Mail
