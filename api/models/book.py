@@ -70,6 +70,13 @@ class Book:
         book = db.books.update_one({"_id": book_id}, {"$set": {"status": status}})
         return book
 
-    
+    def add_comment_id(book_id,comment_id):
+        book_oid = ObjectId(book_id)
+        comment_oid = ObjectId(comment_id)
+        book = db.books.update_one({"_id": book_oid}, {"$push": {"comment_ids": comment_oid}})
+        print("12323123213")
+        print(comment_id)
+        return book
+
     
     
