@@ -8,13 +8,9 @@ from api.utils.db import db
 def initialize_data():
     collections = ["books", "pages", "users"]
     list_of_collections = db.list_collection_names()
-    if ("books" in list_of_collections) and ("pages" in list_of_collections) and ("users" in list_of_collections):
+    if ("books" in collections) and ("pages" in collections) and ("users" in collections):
         print("Data already initialized")
         return
-    if any(collection in list_of_collections for collection in collections):
-        for collection in collections:
-            db[collection].drop()
-            print(f"{collection} dropped")
     
     like_lists = [["user1", "user2", "user3"], []]
     book_status = ["submitting", "finished"]
@@ -140,14 +136,14 @@ def initialize_data():
             "password": "123",
             "email": "123@gmail.com",
             "role": "user",
-            "source": "?",
+            "source": "credentials",
         },
         {
             "username": "user200",
             "password": "223",
             "email": "223@gmail.com",
             "role": "premium",
-            "source": "?",
+            "source": "credentials",
         },
     ]
     userlist = [

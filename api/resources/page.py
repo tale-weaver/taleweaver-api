@@ -2,7 +2,7 @@ from flask import request
 from flask import current_app as app
 from flask_restful import Resource
 from werkzeug.utils import secure_filename
-from api.models.page import Page
+from api.models.page import Page 
 from api.models.book import Book
 from api.models.user import User
 from api.utils.time import now
@@ -32,7 +32,6 @@ class PageUploadConfirm(Resource):
         if not text_description:
             return {"msg": "Missing text description"}, 400
         filepath = os.path.join(images_folder, filename)
-        # print(filepath)
         file.save(filepath)
 
         image_url = os.path.join(Config.BACKEND_URL, filename)
@@ -73,7 +72,7 @@ class PageUploadConfirm(Resource):
 
 
 class VotePage(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self, page_id):
         username = get_jwt_identity()
         # data = request.get_json()
