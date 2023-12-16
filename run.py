@@ -5,6 +5,7 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from api.resources.book import AllStory, SingleBook, LikeBook
 from api.resources.page import PageUploadConfirm, VotePage
+from api.resources.comment import AddComment
 from flask_mail import Mail
 
 from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials
@@ -50,6 +51,7 @@ api.add_resource(ResendVerificationEmail, '/user/resend_verification_email')
 api.add_resource(VerifyEmail, '/user/verify')
 api.add_resource(LoginWithCredentials, '/user/login_with_credentials')
 api.add_resource(UserResource, '/user')
+api.add_resource(AddComment,'/story/<book_id>/comment')
 
 if __name__ == '__main__':
     with app.app_context():
