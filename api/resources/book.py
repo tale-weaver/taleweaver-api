@@ -83,8 +83,7 @@ class LikeBook(Resource):
         # username = data["username"]
         if not username:
             return {"msg": "Missing username"}, 400
-        user = User.find_by_username(username, include_keys=[
-                                     "_id", "liked_book_ids"])
+        user = User.find_by_username(username)
 
         user_id = user["_id"]
         user_liked_book_ids = user["liked_book_ids"]
@@ -96,9 +95,6 @@ class LikeBook(Resource):
             user_liked_book_ids.append(book_oid)
         else:
             user_liked_book_ids.remove(book_oid)
-
-        # AttributeError: 'dict' object has no attribute 'username'
-        # User.update(user, {"liked_book_ids": user_liked_book_ids})
 
         book = Book.find_by_id(book_id)
         numlikes = len(book["liked_by_user_ids"])
@@ -115,7 +111,6 @@ class CreateBook(Resource):
         images_folder = os.path.join(app.root_path, "data")
         os.makedirs(images_folder, exist_ok=True)
 
-        # Update the file path to use the 'images' directory
         filepath = os.path.join(images_folder, filename)
         file.save(filepath)
 
