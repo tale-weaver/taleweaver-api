@@ -6,21 +6,23 @@ from api.models.page import Page
 from api.models.book import Book
 from api.models.user import User
 from api.utils.time import now
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import os
 
 
 class PageUploadConfirm(Resource):
+    @jwt_required
     def post(self, book_id):
-        # book_id = request.args.get('book_id')
-        print("book_id: " + str(book_id))
+        # print("book_id: " + str(book_id))
         text_description = request.form.get("text_description")
-        creator = request.form.get("creator")
+        # creator = request.form.get("creator")
+        creator = get_jwt_identity()
 
         file = request.files.get("file")
         filename = secure_filename(file.filename)
         images_folder = os.path.join(app.root_path, "data")
-        print("text_description: " + str(text_description))
-        print("creator: " + str(creator))
+        # print("text_description: " + str(text_description))
+        # print("creator: " + str(creator))
         if not file:
             return {"msg": "Missing file"}, 400
         if not creator:
@@ -28,7 +30,7 @@ class PageUploadConfirm(Resource):
         if not text_description:
             return {"msg": "Missing text description"}, 400
         filepath = os.path.join(images_folder, filename)
-        print(filepath)
+        # print(filepath)
         file.save(filepath)
 
         image_url = os.path.join(app.config["UPLOAD_FOLDER"], filename)
@@ -44,7 +46,7 @@ class PageUploadConfirm(Resource):
         )
         newPage.save()
 
-        book = Book.find_by_bookid(book_id)
+        book = Book.find_by_id(book_id)
         bookname = book["title"]
 
         return {
@@ -58,7 +60,7 @@ class PageUploadConfirm(Resource):
         }, 200
 
     def get(self, book_id):
-        book = Book.find_by_bookid(book_id)
+        book = Book.find_by_id(book_id)
         bookname = book["title"]
         page_num = len(book["page_ids"]) + 1
 
@@ -69,16 +71,25 @@ class PageUploadConfirm(Resource):
 
 
 class VotePage(Resource):
+    @jwt_required
     def post(self, page_id):
-        data = request.get_json()
-        username = data["username"]
+        username = get_jwt_identity()
+        # data = request.get_json()
+        # username = data["username"]
+
         if not username:
             return {"msg": "Missing username"}, 400
-        user = User.find_by_username(username, include_keys=["_id"])
+        user = User.find_by_username(username, include_keys=["_id"]) # "voted_book_ids"
         user_id = user["_id"]
-        print('this is user_id in VotePage:')
-        print(user_id)
-        page = Page.voted_by_user(page_id, user_id)
-        print(page['voted_by_user_ids'])
-        numvotes = len(page['voted_by_user_ids'])+1
+
+        # user_voted = user["voted_book_ids"]
+        # if page_id in user_voted:
+        #     user_voted.remove(page_id)
+        # else:
+        #     user_voted.append(page_id)
+        # User.update(user, {"voted_book_ids": user_voted})
+            
+        Page.voted_by_user(page_id, user_id)
+        page = Page.find_by_id(page_id)
+        numvotes = len(page['voted_by_user_ids'])
         return {"msg": "success", "records": {"numvotes": numvotes}}, 200

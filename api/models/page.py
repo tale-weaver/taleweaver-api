@@ -1,5 +1,6 @@
 from api.utils.time import now
 from api.utils.db import db
+from api.models.book import Book
 from bson import ObjectId
 
 class Page:
@@ -59,18 +60,34 @@ class Page:
         result = db.books.aggregate(pipeline)
         return result
 
-    def find_page_by_pageid(page_id):
+    def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)
-        page = db.pages.find_one({"_id": page_oid}, {"_id": 0})
+        if include_keys and exclude_keys:
+            projection = {k: 1 for k in include_keys}
+            projection.update({k: 0 for k in exclude_keys})
+            page = db.pages.find_one(
+                {'_id': page_oid}, projection)
+        elif include_keys:
+            projection = {k: 1 for k in include_keys}
+            page = db.pages.find_one(
+                {'_id': page_oid}, projection)
+        elif exclude_keys:
+            projection = {k: 0 for k in exclude_keys}
+            page = db.pages.find_one(
+                {'_id': page_oid}, projection)
+        else:
+            page = db.pages.find_one({'_id': page_oid})
         return page
 
     def find_cover_by_bookid(book_id):
         book_oid = ObjectId(book_id)
-        book = db.books.find_one({"_id": book_oid}, {"_id": 0, "page_ids": 1})
-        if book and 'page_ids' in book:
-            return book.page_ids[0]
-        else:
-            return None
+        page_ids = db.books.find_one({"_id": book_oid}, {"_id": 0, "page_ids": 1})
+        cover_id = page_ids['page_ids'][0]
+        cover_oid = ObjectId(cover_id)
+        cover = db.pages.find_one({"_id": cover_oid}, {"_id": 0})['image']
+        print('cover:')
+        print(cover)
+        return cover
 
     def save_as_fk(book_id, page_id):
         book_oid = ObjectId(book_id)
@@ -90,6 +107,32 @@ class Page:
         print(creator)
         return creator
     
+    def find_voting_pages(book_id):
+        book_oid = ObjectId(book_id)
+        book = Book.find_by_id(book_id, include_keys=["current_interval_id"])
+        current_interval_id = book['current_interval_id']
+        
+        pipeline = [{
+            '$match':{
+            '$and':[
+                {'book_id': book_oid},
+                {'interval_id': current_interval_id},
+            ]
+            }
+        }]
+        # book_current_interval_oid = ObjectId(book_current_interval_id)
+        # pipeline = [{
+        #     '$match':{
+        #     '$and':[
+        #         {'book_id': book_oid},
+        #         {'interval_id': book_current_interval_oid},
+        #     ]
+        #     }
+        # }]
+
+        pages = db.pages.aggregate(pipeline)
+        return pages
+
     def update_status_as_winner(page_id):
         page_oid = ObjectId(page_id)
         page = db.pages.update_one({"_id": page_oid}, {"$set": {"status": "winner"}})
