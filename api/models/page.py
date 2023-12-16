@@ -109,16 +109,26 @@ class Page:
     
     def find_voting_pages(book_id):
         book_oid = ObjectId(book_id)
-        book_current_interval_id = Book.find_by_id(book_id, include_keys=["interval_id"])
-        book_current_interval_oid = ObjectId(book_current_interval_id)
+        book = Book.find_by_id(book_id, include_keys=["current_interval_id"])
+        current_interval_id = book['current_interval_id']
+        
         pipeline = [{
             '$match':{
             '$and':[
                 {'book_id': book_oid},
-                {'interval_id': book_current_interval_oid},
+                {'interval_id': current_interval_id},
             ]
             }
         }]
+        # book_current_interval_oid = ObjectId(book_current_interval_id)
+        # pipeline = [{
+        #     '$match':{
+        #     '$and':[
+        #         {'book_id': book_oid},
+        #         {'interval_id': book_current_interval_oid},
+        #     ]
+        #     }
+        # }]
 
         pages = db.pages.aggregate(pipeline)
         return pages

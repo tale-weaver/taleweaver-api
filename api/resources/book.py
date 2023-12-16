@@ -74,11 +74,11 @@ class SingleBook(Resource):
 
 
 class LikeBook(Resource):
-    # @jwt_required
+    @jwt_required
     def post(self, book_id):
-        # username = get_jwt_identity()
-        data = request.get_json()
-        username = data["username"]
+        username = get_jwt_identity()
+        # data = request.get_json()
+        # username = data["username"]
         if not username:
             return {"msg": "Missing username"}, 400
         user = User.find_by_username(username, include_keys=["_id", "liked_book_ids"])
