@@ -35,7 +35,6 @@ mail.init_app(app)
 JWTManager(app)
 
 api = Api(app)
-app.config['JWT_SECRET_KEY'] = 'tw'  # Change this!
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'data')
 jwt = JWTManager(app)
 

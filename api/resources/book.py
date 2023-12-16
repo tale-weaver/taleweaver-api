@@ -74,7 +74,7 @@ class SingleBook(Resource):
 
 
 class LikeBook(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self, book_id):
         username = get_jwt_identity()
         # data = request.get_json()
