@@ -73,9 +73,10 @@ class Book:
     def add_comment_id(book_id,comment_id):
         book_oid = ObjectId(book_id)
         comment_oid = ObjectId(comment_id)
-        book = db.books.update_one({"_id": book_oid}, {"$push": {"comment_ids": comment_oid}})
-        print("12323123213")
-        print(comment_id)
+        db.books.update_one({"_id": book_oid}, {"$push": {"comment_ids": comment_id}})
+        book = db.books.find_one({"_id": book_oid})
+        # print(book['liked_by_user_ids'])
+        # return num of comments
         return book
 
     

@@ -66,7 +66,7 @@ class AllStory(Resource):
 
 
 class SingleBook(Resource):
-    def get(self):
+    def get(self,book_id):
         book_id = request.args.get("story_id", default=None, type=str)
         if book_id is None:
             return {"msg": "Missing story fields"}, 400

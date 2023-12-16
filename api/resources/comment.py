@@ -19,9 +19,9 @@ class AddComment(Resource):
         print(data)
         if not content:
             return {"msg": "Missing content"}, 400
-        if not commenter:
-            return {"msg": "Missing commenter"}, 400
-        commenter_id = User.find_by_username(commenter)["_id"]
+        # if not commenter:
+        #     return {"msg": "Missing commenter"}, 400
+        # commenter_id = User.find_by_username(commenter)["_id"]
 
         newComment=Comment(
             commenter_id=0,
@@ -32,10 +32,11 @@ class AddComment(Resource):
         newComment.save()
         book=Book.add_comment_id(book_id,newComment._id)
         print(book)
+        # print(len(book["comment_ids"]))
         print(newComment._id)
-        numComments=len(book["comment_ids"])
+        # numComments=len(book["comment_ids"])
         
         return {
             "msg": "success",
-            "records": {"username": commenter, "content": content, "created_at": newComment.created_at,"numComments":numComments},
+            "records": {"username": commenter, "content": content, "created_at": newComment.created_at,"numComments":0},
         }, 200
