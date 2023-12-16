@@ -65,5 +65,5 @@ class User:
     @staticmethod
     def update(user, update_dict):
         user.update(update_dict)
-        db.users.update_one({'username': user.username}, {
-                            '$set': user.__dict__})
+        db.users.update_one({'username': user['username']}, {
+                            '$set': user})
