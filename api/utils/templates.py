@@ -39,7 +39,7 @@ def verification_email(username, verification_code):
             <div class="container">
                 <h1>嗨 {username}!</h1>
                 <p>感謝您註冊 TaleWeaver。請點擊下面的按鈕以驗證您的電子郵件地址。</p>
-                <a href="http://localhost:3000/user/verify?username={username}&verification_code={verification_code}" class="button-link">
+                <a href="http://localhost:3000/verify?username={username}&token={verification_code}" class="button-link">
                     驗證
                 </a>
             </div>

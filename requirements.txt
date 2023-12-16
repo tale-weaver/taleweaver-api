@@ -6,3 +6,4 @@ Flask-Bcrypt
 flask_jwt_extended
 python-dotenv
 Flask-Mail
+flask-cors

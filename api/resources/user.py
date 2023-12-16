@@ -83,7 +83,7 @@ class VerifyEmail(Resource):
     def post(self):
         data = request.get_json()
         username = data['username']
-        verification_code = data['verification_code']
+        verification_code = data['token']
 
         # Check if have all fields
         if not username or not verification_code:
@@ -137,7 +137,8 @@ class UserResource(Resource):
     @jwt_required()
     def get(self):
         current_user = get_jwt_identity()
-        user = User.find_by_username(current_user)
+        user = User.find_by_username(current_user, exclude_keys=[
+                                     'password_hash', 'verification_code'])
         if not user:
             return {'message': 'User not found'}, 404
-        return user, 200
+        return {'message': 'User found', 'record': user}, 200
