@@ -4,6 +4,7 @@ from flask import current_app as app
 from api.models.book import Book
 from api.models.page import Page
 from api.models.user import User
+from api.models.comment import Comment
 from werkzeug.utils import secure_filename
 from api.utils.time import now
 from bson import ObjectId
@@ -50,15 +51,16 @@ class SingleBook(Resource):
         state = book["status"]
         pages = Page.find_pages_by_bookid(book_id)
         pages_voting = Page.find_voting_pages(book_id)
-        comments = [
-            {
-                "user_icon": "user_url",
-                "username": "Mike",
-                "avatar": "string",
-                "content": "Wowwww It's so cool!!!",
-                "comment_date": "2023-12-01",
-            }
-        ]
+        # comments = [
+        #     {
+        #         "user_icon": "user_url",
+        #         "username": "Mike",
+        #         "avatar": "string",
+        #         "content": "Wowwww It's so cool!!!",
+        #         "comment_date": "2023-12-01",
+        #     }
+        # ]
+        comments= Comment.find_comment_of_book(book_id)
         formatted_book = {
             "bookname": bookname,
             "numlikes": numlikes,
@@ -135,7 +137,6 @@ class CreateBook(Resource):
             "msg": "success",
             "records": {"bookname": bookname, "image": image_url, "page_num": page_num},
         }, 200
-<<<<<<< HEAD
 
 
 class SingleBook(Resource):
@@ -164,19 +165,17 @@ class SingleBook(Resource):
         return {"msg": "success", "records": formatted_book}, 200
 
 
-class LikeBook(Resource):
-    def post(self, book_id):
-        data = request.get_json()
-        username = data["username"]
-        if not username:
-            return {"msg": "Missing username"}, 400
-        user = User.find_by_username(username, include_keys=["_id"])
-        user_id = user["_id"]
-        print('this is user_id in LikeBook:')
-        print(user_id)
-        book = Book.liked_by_user(book_id, user_id)
-        print(book['liked_by_user_ids'])
-        numlikes = len(book["liked_by_user_ids"])+1
-        return {"msg": "success", "records": {"numlikes": numlikes}}, 200
-=======
->>>>>>> main
+# class LikeBook(Resource):
+#     def post(self, book_id):
+#         data = request.get_json()
+#         username = data["username"]
+#         if not username:
+#             return {"msg": "Missing username"}, 400
+#         user = User.find_by_username(username, include_keys=["_id"])
+#         user_id = user["_id"]
+#         print('this is user_id in LikeBook:')
+#         print(user_id)
+#         book = Book.liked_by_user(book_id, user_id)
+#         print(book['liked_by_user_ids'])
+#         numlikes = len(book["liked_by_user_ids"])+1
+#         return {"msg": "success", "records": {"numlikes": numlikes}}, 200

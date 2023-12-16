@@ -6,31 +6,34 @@ from api.models.comment import Comment
 from flask_bcrypt import Bcrypt
 from api.utils.time import now
 import random
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 
 bcrypt = Bcrypt()
 
 class AddComment(Resource):
+    @jwt_required()
     def post(self,book_id):
         data = request.get_json()
         content = data['content']
-        commenter = data['commenter']
-        # content = request.form.get("content")
-        # commenter = request.form.get("commenter")
+        username = get_jwt_identity()
+        user = User.find_by_username(username, include_keys=["_id"])
+        commenter = user["_id"]
         print(data)
         if not content:
             return {"msg": "Missing content"}, 400
         # if not commenter:
         #     return {"msg": "Missing commenter"}, 400
         # commenter_id = User.find_by_username(commenter)["_id"]
-
         newComment=Comment(
+            # commenter_id=commenter_id
             commenter_id=0,
             content=content,
             created_at=now(),
             updated_at=now(),
         )
         newComment.save()
-        book=Book.add_comment_id(book_id,newComment._id)
+        book=Book.push_comment(book_id,newComment._id)
         print(book)
         # print(len(book["comment_ids"]))
         print(newComment._id)
@@ -38,5 +41,5 @@ class AddComment(Resource):
         
         return {
             "msg": "success",
-            "records": {"username": commenter, "content": content, "created_at": newComment.created_at,"numComments":0},
+            "records": {"username": 0, "content": content, "created_at": newComment.created_at,"numComments":0},
         }, 200
