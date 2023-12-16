@@ -74,20 +74,21 @@ class SingleBook(Resource):
 
 
 class LikeBook(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self, book_id):
         username = get_jwt_identity()
         # data = request.get_json()
         # username = data["username"]
         if not username:
             return {"msg": "Missing username"}, 400
-        user = User.find_by_username(username, include_keys=["_id", "liked_book_ids"])
+        user = User.find_by_username(username, include_keys=[
+                                     "_id", "liked_book_ids"])
 
         user_id = user["_id"]
         user_liked_book_ids = user["liked_book_ids"]
 
         Book.liked_by_user(book_id, user_id)
-        
+
         book_oid = ObjectId(book_id)
         if book_oid not in user_liked_book_ids:
             user_liked_book_ids.append(book_oid)
@@ -96,7 +97,7 @@ class LikeBook(Resource):
 
         # AttributeError: 'dict' object has no attribute 'username'
         # User.update(user, {"liked_book_ids": user_liked_book_ids})
-        
+
         book = Book.find_by_id(book_id)
         numlikes = len(book["liked_by_user_ids"])
         return {"msg": "success", "records": {"numlikes": numlikes}}, 200
