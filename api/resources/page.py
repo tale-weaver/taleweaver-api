@@ -11,18 +11,18 @@ import os
 
 
 class PageUploadConfirm(Resource):
-    # @jwt_required
+    @jwt_required
     def post(self, book_id):
-        print("book_id: " + str(book_id))
+        # print("book_id: " + str(book_id))
         text_description = request.form.get("text_description")
-        creator = request.form.get("creator")
-        # creator = get_jwt_identity()
+        # creator = request.form.get("creator")
+        creator = get_jwt_identity()
 
         file = request.files.get("file")
         filename = secure_filename(file.filename)
         images_folder = os.path.join(app.root_path, "data")
-        print("text_description: " + str(text_description))
-        print("creator: " + str(creator))
+        # print("text_description: " + str(text_description))
+        # print("creator: " + str(creator))
         if not file:
             return {"msg": "Missing file"}, 400
         if not creator:
@@ -30,7 +30,7 @@ class PageUploadConfirm(Resource):
         if not text_description:
             return {"msg": "Missing text description"}, 400
         filepath = os.path.join(images_folder, filename)
-        print(filepath)
+        # print(filepath)
         file.save(filepath)
 
         image_url = os.path.join(app.config["UPLOAD_FOLDER"], filename)
@@ -71,17 +71,17 @@ class PageUploadConfirm(Resource):
 
 
 class VotePage(Resource):
-    # @jwt_required
+    @jwt_required
     def post(self, page_id):
-        # username = get_jwt_identity()
-        data = request.get_json()
-        username = data["username"]
+        username = get_jwt_identity()
+        # data = request.get_json()
+        # username = data["username"]
 
         if not username:
             return {"msg": "Missing username"}, 400
         user = User.find_by_username(username, include_keys=["_id"]) # "voted_book_ids"
         user_id = user["_id"]
-        
+
         # user_voted = user["voted_book_ids"]
         # if page_id in user_voted:
         #     user_voted.remove(page_id)

@@ -6,15 +6,16 @@ from api.utils.db import db
 
 
 def initialize_data():
-    collections_to_drop = ["books", "pages", "users"]
+    collections = ["books", "pages", "users"]
     list_of_collections = db.list_collection_names()
-
-    if any(collection in list_of_collections for collection in collections_to_drop):
-        for collection in collections_to_drop:
-            return
+    if ("books" in list_of_collections) and ("pages" in list_of_collections) and ("users" in list_of_collections):
+        print("Data already initialized")
+        return
+    if any(collection in list_of_collections for collection in collections):
+        for collection in collections:
             db[collection].drop()
             print(f"{collection} dropped")
-    return
+    
     like_lists = [["user1", "user2", "user3"], []]
     book_status = ["submitting", "finished"]
     comment_ids = [
