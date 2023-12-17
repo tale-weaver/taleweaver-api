@@ -39,6 +39,9 @@ class AllStory(Resource):
                 "numlikes": numlikes,
                 "numcomments": numcomments,
                 "state": book["status"],
+                # update!!!!
+                "time_intervals": time_intervals,
+                # update!!!!
                 "date": book["created_at"],
             }
             formatted_books.append(formatted_book)
