@@ -1,22 +1,56 @@
 from api.models.book import Book
 from api.models.page import Page
 from api.models.user import User
+from api.models.comment import Comment
 from api.utils.time import now
 from api.utils.db import db
 
-
 def initialize_data():
-    collections = ["books", "pages", "users"]
+    collections = ["books", "pages", "users","comments"]
     list_of_collections = db.list_collection_names()
-    if ("books" in collections) and ("pages" in collections) and ("users" in collections):
+    if ("books" in list_of_collections) and ("pages" in list_of_collections) and ("users" in list_of_collections) and ("comments" in list_of_collections):
         print("Data already initialized")
         return
-    
-    like_lists = [["user1", "user2", "user3"], []]
-    book_status = ["submitting", "finished"]
-    comment_ids = [
-        ["comment1, comment2, comment3, comment4", "comment5"],
-        ["comment6", "comment7"],
+    if any(collection in list_of_collections for collection in collections):
+        for collection in collections:
+            db[collection].drop()
+            print(f"{collection} dropped")
+    user = [
+        {
+            "username": "user100",
+            "password": "123",
+            "email": "123@gmail.com",
+            "role": "user",
+            "source": "?",
+        },
+        {
+            "username": "user200",
+            "password": "223",
+            "email": "223@gmail.com",
+            "role": "premium",
+            "source": "?",
+        },
+        {
+            "username": "user300",
+            "password": "323",
+            "email": "323@gmail.com",
+            "role": "premium",
+            "source": "?",
+        },
+        {
+            "username": "user400",
+            "password": "423",
+            "email": "423@gmail.com",
+            "role": "premium",
+            "source": "?",
+        },
+        {
+            "username": "user500",
+            "password": "523",
+            "email": "523@gmail.com",
+            "role": "premium",
+            "source": "?",
+        },
     ]
     interval_ids = [
         [
@@ -40,7 +74,13 @@ def initialize_data():
             "interval28",
         ],
     ]
+    comment_ids = [
+        [],
+        [],
+    ]
+    book_status = ["submitting", "finished"]
     current_interval_id = ["interval18", "interval28"]
+    like_lists = [[], []]
     books = [
         Book(
             title=f"book{i+1}",
@@ -54,17 +94,52 @@ def initialize_data():
         )
         for i in range(2)
     ]
-    for book in books:
-        book.save()
-    image_urls = [
-        f"http://127.0.0.1:5000/data/{i+1}-{j+1}.png"
-        for i in range(2)
-        for j in range(8)
+    userlist = [
+        User(
+            username=user[i]["username"],
+            password=user[i]["password"],
+            email=user[i]["email"],
+            role=user[i]["role"],
+            source=user[i]["source"],
+            liked_book_ids=[],
+        )
+        for i in range(len(user))
+    ]  
+    for user in userlist:
+        user.save()
+    comment = [
+        {
+            "commenter_id":userlist[0]._id, 
+            "content":"hello1", 
+        },
+        {
+            "commenter_id":userlist[2]._id, 
+            "content":"hello2", 
+        },
+        {
+            "commenter_id":userlist[3]._id, 
+            "content":"hello3", 
+        },
+        {
+            "commenter_id":userlist[0]._id, 
+            "content":"hello4", 
+        },
+        {
+            "commenter_id":userlist[2]._id, 
+            "content":"hello5", 
+        },
     ]
-
+    commentlist = [
+        Comment(
+            commenter_id=comment[i]["commenter_id"],
+            content=comment[i]["content"]
+        )for i in range(len(comment))
+    ]
+    for comment in commentlist:
+        comment.save()
     vote_list = [
-        ["user1", "user2", "user3"],
-        ["user1", "user2", "user3", "user4", "user5", "user6"],
+        [userlist[1]._id, userlist[3]._id, userlist[0]._id],
+        [userlist[2]._id, userlist[0]._id, userlist[1]._id, userlist[3]._id],
         [],
     ]
     descriptions = [
@@ -78,14 +153,22 @@ def initialize_data():
         "description8",
     ]
     creator_ids = [
-        "user1",
-        "user2",
-        "user3",
-        "user4",
-        "user5",
-        "user6",
-        "user7",
-        "user8",
+        userlist[0]._id,
+        userlist[1]._id,
+        userlist[1]._id,
+        userlist[1]._id,
+        userlist[2]._id,
+        userlist[3]._id,
+        userlist[2]._id,
+        userlist[0]._id,
+        userlist[0]._id,
+    ]
+    for book in books:
+        book.save()
+    image_urls = [
+        f"http://127.0.0.1:5000/data/{i+1}-{j+1}.png"
+        for i in range(2)
+        for j in range(8)
     ]
     for i in range(len(image_urls)):
         page = Page(
@@ -128,39 +211,9 @@ def initialize_data():
         )
         voting_page.save()
         Book.push_new_page(books[0]._id, voting_page._id)
-    
-
-    user = [
-        {
-            "username": "user100",
-            "password": "123",
-            "email": "123@gmail.com",
-            "role": "user",
-            "source": "credentials",
-        },
-        {
-            "username": "user200",
-            "password": "223",
-            "email": "223@gmail.com",
-            "role": "premium",
-            "source": "credentials",
-        },
-    ]
-    userlist = [
-        User(
-            username=user[i]["username"],
-            password=user[i]["password"],
-            email=user[i]["email"],
-            role=user[i]["role"],
-            source=user[i]["source"],
-            liked_book_ids=[books[0]._id],
-        )
-        for i in range(len(user))
-    ]
-
-    for i in range(len(user)):
-        userlist[i].save()
+    for comment in commentlist:
+        Book.push_comment(books[0]._id,comment._id)
     Book.liked_by_user(books[0]._id, userlist[0]._id)
-    Book.liked_by_user(books[1]._id, userlist[0]._id)
-
+    Book.liked_by_user(books[1]._id, userlist[2]._id)
+    books[0].save()
     print("Data initialized with 2 users 2 books and 20 pages!")
