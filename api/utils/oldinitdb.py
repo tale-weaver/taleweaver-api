@@ -7,91 +7,91 @@ from api.utils.db import db
 
 
 def initialize_data():
-    collections = ["books", "pages", "users"]
-    list_of_collections = db.list_collection_names()
-    if ("books" in list_of_collections) and ("pages" in list_of_collections) and ("users" in list_of_collections):
-        print("Data already initialized")
-        return
-    if any(collection in list_of_collections for collection in collections):
-        for collection in collections:
-            db[collection].drop()
-            print(f"{collection} dropped")
+    # collections = ["books", "pages", "users"]
+    # list_of_collections = db.list_collection_names()
+    # if ("books" in list_of_collections) and ("pages" in list_of_collections) and ("users" in list_of_collections):
+    #     print("Data already initialized")
+    #     return
+    # if any(collection in list_of_collections for collection in collections):
+    #     for collection in collections:
+    #         db[collection].drop()
+    #         print(f"{collection} dropped")
     
-    like_lists = [["user1", "user2", "user3"], []]
-    book_status = ["submitting", "finished"]
-    comment_ids = [
-        ["comment1, comment2, comment3, comment4", "comment5"],
-        ["comment6", "comment7"],
-    ]
-    interval_ids = [
-        [
-            "interval11",
-            "interval12",
-            "interval13",
-            "interval14",
-            "interval15",
-            "interval16",
-            "interval17",
-            "interval18",
-        ],
-        [
-            "interval21",
-            "interval22",
-            "interval23",
-            "interval24",
-            "interval25",
-            "interval26",
-            "interval27",
-            "interval28",
-        ],
-    ]
-    current_interval_id = ["interval18", "interval28"]
-    books = [
-        Book(
-            title=f"book{i+1}",
-            status=book_status[i],
-            comment_ids=comment_ids[i],
-            liked_by_user_ids=like_lists[i],
-            interval_ids=interval_ids[i],
-            current_interval_id=current_interval_id[i],
-            created_at=now(),
-            updated_at=now(),
-        )
-        for i in range(2)
-    ]
-    for book in books:
-        book.save()
-    image_urls = [
-        f"http://127.0.0.1:5000/data/{i+1}-{j+1}.png"
-        for i in range(2)
-        for j in range(8)
-    ]
+    # like_lists = [["user1", "user2", "user3"], []]
+    # book_status = ["submitting", "finished"]
+    # comment_ids = [
+    #     ["comment1, comment2, comment3, comment4", "comment5"],
+    #     ["comment6", "comment7"],
+    # ]
+    # interval_ids = [
+    #     [
+    #         "interval11",
+    #         "interval12",
+    #         "interval13",
+    #         "interval14",
+    #         "interval15",
+    #         "interval16",
+    #         "interval17",
+    #         "interval18",
+    #     ],
+    #     [
+    #         "interval21",
+    #         "interval22",
+    #         "interval23",
+    #         "interval24",
+    #         "interval25",
+    #         "interval26",
+    #         "interval27",
+    #         "interval28",
+    #     ],
+    # ]
+    # current_interval_id = ["interval18", "interval28"]
+    # books = [
+    #     Book(
+    #         title=f"book{i+1}",
+    #         status=book_status[i],
+    #         comment_ids=comment_ids[i],
+    #         liked_by_user_ids=like_lists[i],
+    #         interval_ids=interval_ids[i],
+    #         current_interval_id=current_interval_id[i],
+    #         created_at=now(),
+    #         updated_at=now(),
+    #     )
+    #     for i in range(2)
+    # ]
+    # for book in books:
+    #     book.save()
+    # image_urls = [
+    #     f"http://127.0.0.1:5000/data/{i+1}-{j+1}.png"
+    #     for i in range(2)
+    #     for j in range(8)
+    # ]
 
-    vote_list = [
-        ["user1", "user2", "user3"],
-        ["user1", "user2", "user3", "user4", "user5", "user6"],
-        [],
-    ]
-    descriptions = [
-        "description1",
-        "description2",
-        "description3",
-        "description4",
-        "description5",
-        "description6",
-        "description7",
-        "description8",
-    ]
-    creator_ids = [
-        "user1",
-        "user2",
-        "user3",
-        "user4",
-        "user5",
-        "user6",
-        "user7",
-        "user8",
-    ]
+    # vote_list = [
+    #     ["user1", "user2", "user3"],
+    #     ["user1", "user2", "user3", "user4", "user5", "user6"],
+    #     [],
+    # ]
+    # descriptions = [
+    #     "description1",
+    #     "description2",
+    #     "description3",
+    #     "description4",
+    #     "description5",
+    #     "description6",
+    #     "description7",
+    #     "description8",
+    # ]
+    # creator_ids = [
+    #     "user1",
+    #     "user2",
+    #     "user3",
+    #     "user4",
+    #     "user5",
+    #     "user6",
+    #     "user7",
+    #     "user8",
+    # ]
     for i in range(len(image_urls)):
         page = Page(
             image=image_urls[i],
@@ -135,54 +135,54 @@ def initialize_data():
         Book.push_new_page(books[0]._id, voting_page._id)
     
 
-    user = [
-        {
-            "username": "user100",
-            "password": "123",
-            "email": "123@gmail.com",
-            "role": "user",
-            "source": "?",
-        },
-        {
-            "username": "user200",
-            "password": "223",
-            "email": "223@gmail.com",
-            "role": "premium",
-            "source": "?",
-        },
-        {
-            "username": "user300",
-            "password": "323",
-            "email": "323@gmail.com",
-            "role": "premium",
-            "source": "?",
-        },
-        {
-            "username": "user400",
-            "password": "423",
-            "email": "423@gmail.com",
-            "role": "premium",
-            "source": "?",
-        },
-        {
-            "username": "user500",
-            "password": "523",
-            "email": "523@gmail.com",
-            "role": "premium",
-            "source": "?",
-        },
-    ]
-    userlist = [
-        User(
-            username=user[i]["username"],
-            password=user[i]["password"],
-            email=user[i]["email"],
-            role=user[i]["role"],
-            source=user[i]["source"],
-            liked_book_ids=[books[0]._id],
-        )
-        for i in range(len(user))
-    ]
+    # user = [
+    #     {
+    #         "username": "user100",
+    #         "password": "123",
+    #         "email": "123@gmail.com",
+    #         "role": "user",
+    #         "source": "?",
+    #     },
+    #     {
+    #         "username": "user200",
+    #         "password": "223",
+    #         "email": "223@gmail.com",
+    #         "role": "premium",
+    #         "source": "?",
+    #     },
+    #     {
+    #         "username": "user300",
+    #         "password": "323",
+    #         "email": "323@gmail.com",
+    #         "role": "premium",
+    #         "source": "?",
+    #     },
+    #     {
+    #         "username": "user400",
+    #         "password": "423",
+    #         "email": "423@gmail.com",
+    #         "role": "premium",
+    #         "source": "?",
+    #     },
+    #     {
+    #         "username": "user500",
+    #         "password": "523",
+    #         "email": "523@gmail.com",
+    #         "role": "premium",
+    #         "source": "?",
+    #     },
+    # ]
+    # userlist = [
+    #     User(
+    #         username=user[i]["username"],
+    #         password=user[i]["password"],
+    #         email=user[i]["email"],
+    #         role=user[i]["role"],
+    #         source=user[i]["source"],
+    #         liked_book_ids=[books[0]._id],
+    #     )
+    #     for i in range(len(user))
+    # ]
 
     for i in range(len(user)):
         userlist[i].save()
