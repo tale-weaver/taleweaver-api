@@ -13,20 +13,29 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 class AllStory(Resource):
+    @jwt_required()
     def get(self):
+        username = get_jwt_identity()
+        user = User.find_by_username(username)
+        user_liked_book_ids = user["liked_book_ids"]
         all_books = Book.find_all_books()
         if not all_books:
             return {"msg": "No books"}, 400
         formatted_books = []
+        
 
-        for order, book in enumerate(all_books, start=1):
+        for book in all_books:
             bookurl = Page.find_cover_by_bookid(book["_id"])
             numlikes = len(book["liked_by_user_ids"])
             numcomments = len(book["comment_ids"])
+            liked = False
+            if book["_id"] in user_liked_book_ids:
+                liked = True
             formatted_book = {
                 "bookurl": bookurl,
                 "bookname": book["title"],
-                "book_id": order,
+                "book_id": book["_id"],
+                "liked": liked,
                 "numlikes": numlikes,
                 "numcomments": numcomments,
                 "state": book["status"],
@@ -50,15 +59,19 @@ class SingleBook(Resource):
         numcomments = len(book["comment_ids"])
         state = book["status"]
         pages = Page.find_pages_by_bookid(book_id)
-        pages_voting = Page.find_voting_pages(book_id)
+        if state == "voting":
+            pages_status = Page.find_voting_pages(book_id)
+        elif state == "submitting":
+            pages_status = Page.find_pages_by_bookid(book_id)
+        elif state == "finished":
+            pages_status = {}
         comments= Comment.find_comment_of_book(book_id)
         formatted_book = {
             "bookname": bookname,
             "numlikes": numlikes,
             "numcomments": numcomments,
             "state": state,
-            "pages": pages,
-            "pages_voting": pages_voting,
+            "pages": [pages, pages_status],
             # 狀態下的頁面是否包含投票中？
             "page_num": page_num + 1,
             "comments": comments,
