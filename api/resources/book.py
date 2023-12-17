@@ -74,14 +74,11 @@ class LikeBook(Resource):
         # username = data["username"]
         if not username:
             return {"msg": "Missing username"}, 400
-        user = User.find_by_username(username)
-
-        user_id = user["_id"]
-        user_liked_book_ids = user["liked_book_ids"]
-
-        Book.liked_by_user(book_id, user_id)
+        Book.liked_by_user(book_id, username)
 
         book_oid = ObjectId(book_id)
+        user = User.find_by_username(username)
+        user_liked_book_ids = user["liked_book_ids"]
         if book_oid not in user_liked_book_ids:
             user_liked_book_ids.append(book_oid)
         else:
@@ -127,11 +124,10 @@ class CreateBook(Resource):
 
 
 class SingleBook(Resource):
-    def get(self,book_id):
-        book_id = request.args.get("story_id", default=None, type=str)
+    def get(self, book_id):
         if book_id is None:
             return {"msg": "Missing story fields"}, 400
-        book = Book.find_by_bookid(book_id)
+        book = Book.find_by_id(book_id)
         if not book:
             return {"msg": "No book"}, 400
         bookname = book["bookname"]
@@ -140,6 +136,7 @@ class SingleBook(Resource):
         numcomments = len(book["comment_ids"])
         state = book["status"]
         pages = Page.find_pages_by_bookid(book_id)
+        pages_voting = Page.find_voting_pages(book_id)
         formatted_book = {
             "bookname": bookname,
             "numlikes": numlikes,
@@ -147,22 +144,7 @@ class SingleBook(Resource):
             "state": state,
             "pages": pages,
             # 狀態下的頁面是否包含投票中？
+            "pages_voting": pages_voting,
             "page_num": page_num,
         }
         return {"msg": "success", "records": formatted_book}, 200
-
-
-# class LikeBook(Resource):
-#     def post(self, book_id):
-#         data = request.get_json()
-#         username = data["username"]
-#         if not username:
-#             return {"msg": "Missing username"}, 400
-#         user = User.find_by_username(username, include_keys=["_id"])
-#         user_id = user["_id"]
-#         print('this is user_id in LikeBook:')
-#         print(user_id)
-#         book = Book.liked_by_user(book_id, user_id)
-#         print(book['liked_by_user_ids'])
-#         numlikes = len(book["liked_by_user_ids"])+1
-#         return {"msg": "success", "records": {"numlikes": numlikes}}, 200

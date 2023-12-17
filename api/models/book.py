@@ -35,11 +35,6 @@ class Book:
         valid_status = ["finished", "submitting", "voting"]
         if status not in valid_status:
             raise ValueError("Status must be one of {}".format(valid_status))
-    
-
-    
-
-
 
     @staticmethod
     def find_by_id(book_id, include_keys=[], exclude_keys=[]):
@@ -76,19 +71,17 @@ class Book:
         book = db.books.find_one({"_id": book_oid})
         return book
     
-    def liked_by_user(book_id, user_id):
+    def liked_by_user(book_id, username):
         book_oid = ObjectId(book_id)
+        book = db.books.find_one({"_id": book_oid})
+        user = User.find_by_username(username)
+        user_id = user["_id"]
         user_oid = ObjectId(user_id)
-        book = db.books.find_one({"_id": book_oid})
-        if user_id in book['liked_by_user_ids']:
-            db.books.update_one({"_id": book_oid}, {"$pull": {"liked_by_user_ids": user_id}})
-            
-            # User.update()
-            
+        if user_oid in book['liked_by_user_ids']:
+            db.books.update_one({"_id": book_oid}, {"$pull": {"liked_by_user_ids": user_oid}})
         else:
-            db.books.update_one({"_id": book_oid}, {"$push": {"liked_by_user_ids": user_id}})
+            db.books.update_one({"_id": book_oid}, {"$push": {"liked_by_user_ids": user_oid}})
         book = db.books.find_one({"_id": book_oid})
-        # 還沒做 User 的 liked_book_ids 更新
         return book
     
     def update_status_by_bookid(book_id, status):

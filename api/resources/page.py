@@ -40,7 +40,7 @@ class PageUploadConfirm(Resource):
             creator_id=creator_id,
             book_id=book_id,
             created_at=now(),
-            interval_id=1,
+            interval_id=now(),
         )
         newPage.save()
 

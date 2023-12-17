@@ -81,19 +81,19 @@ def check_book_status():
     elif books_submitting is None:
         for book in books_voting:
             if book["current_interval_id"] <= now() and len(book["page_ids"]) < 8:
-                Book.update_book_status(book["_id"], "submitting")
+                Book.update_status_by_bookid(book["_id"], "submitting")
                 print(book["title"] + "update to submitting")
             elif book["current_interval_id"] <= now() and len(book["page_ids"]) == 8:
-                Book.update_book_status(book["_id"], "finished")
+                Book.update_status_by_bookid(book["_id"], "finished")
                 print(book["title"] + "update to finished")
-                # push winner page into book
+            # update each page winner of book in voting 
             pages_voting = Page.find_voting_pages(book["_id"])
             for page in pages_voting:
                 max_vote = 0
                 if len(page["voted_by_user_ids"]) >= max_vote:
                     max_vote = page["voted_by_user_ids"]
                     winner_page = page
-                    print(winner_page["_id"] + "is winner")
+            print(winner_page["_id"] + "is winner")                    
             for page in pages_voting:
                 if page["_id"] != winner_page["_id"]:
                     Page.update_status_as_loser(page["_id"])
@@ -101,13 +101,12 @@ def check_book_status():
                 else:
                     Page.update_status_as_winner(page["_id"])
                     print(page["_id"] + "is winner")
+            Book.push_new_page(book["_id"], winner_page["_id"])
     elif books_voting is None:
         for book in books_submitting:
             if book["current_interval_id"] <= now():
-                Book.update_book_status(book["_id"], "voting")        
+                Book.update_status_by_bookid(book["_id"], "voting")        
                 print(book["title"]+"update to voting")
-
-    Book.push_new_page(book["_id"], winner_page["_id"])
     Book.update_current_interval_id(book["_id"])
     print("end check_book_status")
 
