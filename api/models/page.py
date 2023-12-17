@@ -9,8 +9,8 @@ class Page:
         image,
         description,
         book_id,
-        interval_id,
         creator_id,
+        interval_id = now(),
         voted_by_user_ids = [],
         created_at = now(),
         updated_at = now(),
@@ -109,27 +109,23 @@ class Page:
     
     def find_voting_pages(book_id):
         book_oid = ObjectId(book_id)
-        book = Book.find_by_id(book_id, include_keys=["current_interval_id"])
+        book = Book.find_by_id(book_id)
         current_interval_id = book['current_interval_id']
-        
+        interval_ids = book['interval_ids']
+        current_interval_index = interval_ids.index(current_interval_id)
+        num_pages = len(book['page_ids'])
+        if num_pages < 8:
+            interval_range = { '$lt': interval_ids[current_interval_index-1], '$gte': current_interval_id}
+        else:
+            interval_range = { '$lt': current_interval_id }
         pipeline = [{
             '$match':{
             '$and':[
                 {'book_id': book_oid},
-                {'interval_id': current_interval_id},
+                {'interval_id': interval_range},
             ]
             }
         }]
-        # book_current_interval_oid = ObjectId(book_current_interval_id)
-        # pipeline = [{
-        #     '$match':{
-        #     '$and':[
-        #         {'book_id': book_oid},
-        #         {'interval_id': book_current_interval_oid},
-        #     ]
-        #     }
-        # }]
-
         pages = db.pages.aggregate(pipeline)
         return pages
 

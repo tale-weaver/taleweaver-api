@@ -51,15 +51,6 @@ class SingleBook(Resource):
         state = book["status"]
         pages = Page.find_pages_by_bookid(book_id)
         pages_voting = Page.find_voting_pages(book_id)
-        # comments = [
-        #     {
-        #         "user_icon": "user_url",
-        #         "username": "Mike",
-        #         "avatar": "string",
-        #         "content": "Wowwww It's so cool!!!",
-        #         "comment_date": "2023-12-01",
-        #     }
-        # ]
         comments= Comment.find_comment_of_book(book_id)
         formatted_book = {
             "bookname": bookname,

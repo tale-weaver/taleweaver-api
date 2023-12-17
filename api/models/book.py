@@ -1,5 +1,5 @@
 from api.utils.db import db
-from api.utils.time import now
+from api.utils.time import now, create_time_intervals
 from api.models.user import User
 from bson import ObjectId
 from bson.json_util import loads, dumps
@@ -9,12 +9,12 @@ class Book:
     def __init__(
         self,
         title,
-        current_interval_id,
+        current_interval_id = now(),
         status="submitting",
         page_ids = [],
         comment_ids = [],
         liked_by_user_ids = [],
-        interval_ids = [],
+        interval_ids = create_time_intervals(now(), 120, 16),
         created_at = now(),
         updated_at = now(),
     ):
@@ -102,6 +102,18 @@ class Book:
         comment_oid = ObjectId(comment_id)
         db.books.update_one({"_id": book_oid}, {"$push": {"comment_ids": comment_oid}})
         book = db.books.find_one({"_id": book_oid})
+        return book
+    
+    def update_current_interval_id(book_id):
+        book_oid = ObjectId(book_id)
+        book = Book.find_by_id(book_oid)
+        current_interval_id = book['current_interval_id']
+        interval_ids = book['interval_ids']
+        if current_interval_id == interval_ids[-1]:
+            return
+        else:
+            db.books.update_one({"_id": book_oid}, {"$set": {"current_interval_id": interval_ids[interval_ids.index(current_interval_id) + 1]}})
+        book = Book.find_by_id(book_id)
         return book
     
     

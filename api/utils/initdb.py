@@ -15,7 +15,7 @@ def initialize_data():
     like_lists = [["user1", "user2", "user3"], []]
     book_status = ["submitting", "finished"]
     comment_ids = [
-        ["comment1, comment2, comment3, comment4", "comment5"],
+        ["comment1", "comment2", "comment3", "comment4", "comment5"],
         ["comment6", "comment7"],
     ]
     interval_ids = [
