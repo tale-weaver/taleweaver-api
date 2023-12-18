@@ -62,7 +62,8 @@ def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", cover_z
         for image_path in users_image_paths[_id]:
             random_title_description = random.choice(pages_data)
             Page(
-                image=urljoin(Config.BACKEND_URL, image_path),
+                image=urljoin(Config.BACKEND_URL,
+                              image_path.replace('\\', '/')),
                 **random_title_description,
                 creator_id=ObjectId(_id),
                 # TODO: design create_at
@@ -136,7 +137,7 @@ def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", cover_z
 
     for book_id in books_ids:
         cover_path = books_covers_paths[book_id]
-        cover_url = urljoin(Config.BACKEND_URL, cover_path)
+        cover_url = urljoin(Config.BACKEND_URL, cover_path.replace('\\', '/'))
         Book.update_cover(book_id, cover_url)
 
     print("Cover images of all books are updated...")
