@@ -10,11 +10,10 @@ from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, Use
 from api.resources.book import AllStory, SingleBook, LikeBook, TestFunction
 from api.resources.page import PageUploadConfirm, VotePage
 from api.resources.comment import AddComment
-from api.resources.getImage import StaticImage
 
 from api.utils.init_db import db_init
 from api.utils.json_encoder import MongoJSONEncoder
-from api.utils.time import now
+from api.utils.time import now, find_surrounding_datetime_indices
 
 from api.models.page import Page
 from api.models.book import Book
@@ -45,7 +44,6 @@ JWTManager(app)
 api = Api(app)
 
 api.add_resource(TestFunction, '/test/<book_id>')
-api.add_resource(StaticImage, '/data/<filename>')
 api.add_resource(AllStory, '/story')
 api.add_resource(PageUploadConfirm, '/story/upload/<book_id>')
 api.add_resource(SingleBook, '/story/<book_id>')
@@ -74,6 +72,31 @@ scheduler.start()
 # update book current interval id
 def check_book_status():
     print("start check_book_status")
+    books = Book.find_all_books()
+    interval_ids = [book["interval_ids"] for book in books]
+
+    for book in books:
+        timestrs = [interval["time_stamp"] for interval in interval_ids]
+        target_idx_pre, target_idx_post = find_surrounding_datetime_indices(timestrs)
+        target_status = interval_ids[target_idx_pre]['status']
+        next_status = interval_ids[target_idx_post]['status']
+        target_time = interval_ids[target_idx_post]['time_stamp']
+        target_round = interval_ids[target_idx_pre]['round']
+        
+        if target_status == "finished":
+            continue
+
+        if target_status == "submitting" and :
+            Book.update_status_by_bookid(book["_id"], "voting")    
+            
+                
+        elif target_status == "voting" and :
+
+
+        Book.update_status_by_bookid(book["_id"], next_stage)
+    
+    
+    
     books_submitting = Book.find_all_books_by_status("submitting")
     books_voting = Book.find_all_books_by_status("voting")
     if books_submitting is None and books_voting is None:

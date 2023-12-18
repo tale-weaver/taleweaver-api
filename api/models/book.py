@@ -79,6 +79,7 @@ class Book:
         book = db.books.find_one({"_id": book_oid})
         return book
 
+    @staticmethod
     def liked_by_user(book_id, username):
         book_oid = ObjectId(book_id)
         book = db.books.find_one({"_id": book_oid})
@@ -113,6 +114,7 @@ class Book:
         book = db.books.find_one({"_id": book_oid})
         return book
 
+    @staticmethod
     def update_current_interval_id(book_id):
         book_oid = ObjectId(book_id)
         book = Book.find_by_id(book_oid)

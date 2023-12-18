@@ -66,7 +66,8 @@ class Page:
             formatted_book.update(item['pages'])
         print(formatted_book)
         return formatted_book
-
+    
+    @staticmethod
     def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)
         if include_keys and exclude_keys:
@@ -86,6 +87,7 @@ class Page:
             page = db.pages.find_one({'_id': page_oid})
         return page
 
+    @staticmethod
     def find_cover_by_bookid(book_id):
         book_oid = ObjectId(book_id)
         page_ids = db.books.find_one(
@@ -97,6 +99,7 @@ class Page:
         print(cover)
         return cover
 
+    @staticmethod
     def save_as_fk(book_id, page_id):
         book_oid = ObjectId(book_id)
         page_oid = ObjectId(page_id)
@@ -104,6 +107,7 @@ class Page:
             {"_id": book_oid}, {"$push": {"page_id": page_oid}})
         return book
 
+    @staticmethod
     def find_creator_by_id(page_id):
         page_oid = ObjectId(page_id)
         page = db.pages.find_one({"_id": page_oid})
@@ -116,6 +120,7 @@ class Page:
         print(creator)
         return creator
 
+    @staticmethod
     def find_voting_pages(book_id):
         book_oid = ObjectId(book_id)
         book = Book.find_by_id(book_id)
@@ -167,6 +172,7 @@ class Page:
 
         return page
 
+    @staticmethod
     def voted_by_user(page_id, user_id):
         page_oid = ObjectId(page_id)
         print('page_oid:')
