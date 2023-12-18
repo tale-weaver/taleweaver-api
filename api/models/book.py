@@ -8,6 +8,7 @@ class Book:
     def __init__(
         self,
         title,
+        cover,
         description,
         page_ids=[],
         comment_ids=[],
@@ -17,6 +18,7 @@ class Book:
         updated_at=now(),
     ):
         self.title = title
+        self.cover = cover
         self.description = description
         self.page_ids = page_ids
         self.comment_ids = comment_ids
@@ -61,14 +63,50 @@ class Book:
         return book
 
     @staticmethod
+    def update(book, update_dict):
+        book.update(update_dict)
+        db.books.update_one({'title': book['title']}, {
+                            '$set': book})
+    @staticmethod
     def find_all_books():
         book = db.books.find()
         return book
 
     @staticmethod
-    def find_all_books_by_status(status):
+    def find_books_by_status(status):
         book = db.books.find({"status": status})
         return book
+    
+    @staticmethod
+    def find_winner_pages(book_id):
+        book_oid = ObjectId(book_id)
+        book = Book.find_by_id(book_id)
+        pipeline = [
+            {"$match": {"_id": book_oid}},
+            {"$unwind": "$page_ids"},
+            {
+                "$lookup": {
+                    "from": "pages",
+                    "localField": "page_ids",
+                    "foreignField": "_id",
+                    "as": "pages",
+                }
+            },
+            {"$unwind": "$pages"},
+            {
+                "$project": {
+                    "pages": "$pages",
+                }
+            },
+        ]
+        result = db.books.aggregate(pipeline)
+        # _id of result is book_id an ['pages'] is a list of pages
+        print('result:')
+        formatted_book = []
+        for item in result:
+            formatted_book.append(item['pages'])
+        print(formatted_book)
+        return formatted_book
 
     @staticmethod
     def push_new_page(book_id, page_id):
@@ -96,13 +134,6 @@ class Book:
         return book
 
     @staticmethod
-    def update_status_by_bookid(book_id, status):
-        book_oid = ObjectId(book_id)
-        db.books.update_one({"_id": book_oid}, {"$set": {"status": status}})
-        book = db.books.find_one({"_id": book_oid})
-        return book
-
-    @staticmethod
     def push_comment(book_id, comment_id, user_id):
         book_oid = ObjectId(book_id)
         comment_oid = ObjectId(comment_id)
@@ -112,18 +143,4 @@ class Book:
         db.users.update_one({"_id": user_oid}, {
                             "$push": {"comment_ids": comment_oid}})
         book = db.books.find_one({"_id": book_oid})
-        return book
-
-    @staticmethod
-    def update_current_interval_id(book_id):
-        book_oid = ObjectId(book_id)
-        book = Book.find_by_id(book_oid)
-        current_interval_id = book['current_interval_id']
-        interval_ids = book['interval_ids']
-        if current_interval_id == interval_ids[-1]:
-            return
-        else:
-            db.books.update_one({"_id": book_oid}, {"$set": {
-                                "current_interval_id": interval_ids[interval_ids.index(current_interval_id) + 1]}})
-        book = Book.find_by_id(book_id)
         return book

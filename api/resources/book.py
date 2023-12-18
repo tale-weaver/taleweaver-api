@@ -24,23 +24,21 @@ class AllStory(Resource):
         formatted_books = []
 
         for book in all_books:
-            bookurl = Page.find_cover_by_bookid(book["_id"])
-            numlikes = len(book["liked_by_user_ids"])
-            numcomments = len(book["comment_ids"])
+            num_likes = len(book["liked_by_user_ids"])
+            num_comments = len(book["comment_ids"])
+
             liked = False
             if book["_id"] in user_liked_book_ids:
                 liked = True
+
             formatted_book = {
-                "bookurl": bookurl,
+                "bookurl": book["cover"],
                 "bookname": book["title"],
                 "book_id": book["_id"],
                 "liked": liked,
-                "numlikes": numlikes,
-                "numcomments": numcomments,
+                "numlikes": num_likes,
+                "numcomments": num_comments,
                 "state": book["status"],
-                # update!!!!
-                # "time_intervals": time_intervals,
-                # update!!!!
                 "date": book["created_at"],
             }
             formatted_books.append(formatted_book)
@@ -55,26 +53,24 @@ class SingleBook(Resource):
         book = Book.find_by_id(book_id)
         if not book:
             return {"msg": "No book"}, 400
-        bookname = book["title"]
+
         page_num = len(book["page_ids"])
-        numlikes = len(book["liked_by_user_ids"])
-        numcomments = len(book["comment_ids"])
-        state = book["status"]
-        pages = Page.find_pages_by_bookid(book_id, "winner")
-        if state == "voting":
-            pages_status = Page.find_voting_pages(book_id)
-        elif state == "submitting":
+        num_likes = len(book["liked_by_user_ids"])
+        num_comments = len(book["comment_ids"])
+        status = book["status"]
+        pages_winner = Book.find_winner_pages(book_id)
+        if status == "voting" or "submitting":
             pages_status = Page.find_pages_by_bookid(book_id)
-        elif state == "finished":
+        elif status == "finished":
             pages_status = {}
         comments = Comment.find_comment_of_book(book_id)
         formatted_book = {
-            "bookname": bookname,
-            "numlikes": numlikes,
-            "numcomments": numcomments,
-            "state": state,
-            "pages": [pages, pages_status],
-            # 狀態下的頁面是否包含投票中？
+            "bookurl": book["cover"],
+            "bookname": book["title"],
+            "numlikes": num_likes,
+            "numcomments": num_comments,
+            "state": status,
+            "pages": {"winner": pages_winner, "ongoning": pages_status},
             "page_num": page_num + 1,
             "comments": comments,
         }

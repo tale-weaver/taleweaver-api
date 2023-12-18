@@ -4,8 +4,6 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
-from apscheduler.schedulers.background import BackgroundScheduler
-
 from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials
 from api.resources.book import AllStory, SingleBook, LikeBook, TestFunction
 from api.resources.page import PageUploadConfirm, VotePage
@@ -57,9 +55,6 @@ api.add_resource(UserResource, '/user')
 api.add_resource(AddComment, '/story/<book_id>/comment')
 
 
-scheduler = BackgroundScheduler()
-scheduler.start()
-
 # find all submitting books ->
 # if book has less than 9 pages -> update book status to voting
 # if book  9 pages -> update book status to finished
@@ -69,70 +64,55 @@ scheduler.start()
 # choose winner page -> update page status to winner -> update
 
 
+from flask_apscheduler import APScheduler
+aps = APScheduler()
+
 # update book current interval id
 def check_book_status():
     print("start check_book_status")
     books = Book.find_all_books()
-    interval_ids = [book["interval_ids"] for book in books]
 
     for book in books:
+
+        if target_status == "finished":
+            continue
+
+        interval_ids = [book["interval_ids"] for book in books]
         timestrs = [interval["time_stamp"] for interval in interval_ids]
         target_idx_pre, target_idx_post = find_surrounding_datetime_indices(timestrs)
         target_status = interval_ids[target_idx_pre]['status']
         next_status = interval_ids[target_idx_post]['status']
-        target_time = interval_ids[target_idx_post]['time_stamp']
         target_round = interval_ids[target_idx_pre]['round']
+        next_round = interval_ids[target_idx_post]['round']
         
-        if target_status == "finished":
-            continue
+        
 
-        if target_status == "submitting" and :
-            Book.update_status_by_bookid(book["_id"], "voting")    
-            
-                
-        elif target_status == "voting" and :
+        # book information not equal to target status means it goes to next level            
+        if target_status == "voting" and target_status != book["status"]:
+            pages = Page.find_voting_pages(book["_id"])
 
-
-        Book.update_status_by_bookid(book["_id"], next_stage)
-    
-    
-    
-    books_submitting = Book.find_all_books_by_status("submitting")
-    books_voting = Book.find_all_books_by_status("voting")
-    if books_submitting is None and books_voting is None:
-        print("no book")
-        return
-    elif books_submitting is None:
-        for book in books_voting:
-            if book["current_interval_id"] <= now() and len(book["page_ids"]) < 8:
-                Book.update_status_by_bookid(book["_id"], "submitting")
-                print(book["title"] + "update to submitting")
-            elif book["current_interval_id"] <= now() and len(book["page_ids"]) == 8:
-                Book.update_status_by_bookid(book["_id"], "finished")
-                print(book["title"] + "update to finished")
-            # update each page winner of book in voting
-            pages_voting = Page.find_voting_pages(book["_id"])
-            for page in pages_voting:
+            for page in pages:
                 max_vote = 0
+                Page.update_status(page, "loser")
                 if len(page["voted_by_user_ids"]) >= max_vote:
-                    max_vote = page["voted_by_user_ids"]
-                    winner_page = page
-            print(winner_page["_id"] + "is winner")
-            for page in pages_voting:
-                if page["_id"] != winner_page["_id"]:
-                    Page.update_status_as_loser(page["_id"])
-                    print(page["_id"] + "is loser")
-                else:
-                    Page.update_status_as_winner(page["_id"])
-                    print(page["_id"] + "is winner")
-            Book.push_new_page(book["_id"], winner_page["_id"])
-    elif books_voting is None:
-        for book in books_submitting:
-            if book["current_interval_id"] <= now():
-                Book.update_status_by_bookid(book["_id"], "voting")
-                print(book["title"]+"update to voting")
-    Book.update_current_interval_id(book["_id"])
-    print("end check_book_status")
+                    max_vote = len(page["voted_by_user_ids"])
+                    winner_page_id = page['_id']
+            
+            winner_page = Page.find_by_id(winner_page_id)
+            Page.update_status(winner_page, "winner")
+
+            winner_pages = book["page_ids"]
+            winner_pages.append(winner_page_id)      
+            update_dict = {"page_ids": winner_pages, "status": next_status, "round": next_round}
+            Book.update(book, update_dict)
+            
+            print(book["title"] + "update to "+ book["status"]+ "supposed to be "+ next_status)
+
+        elif target_status == "submitting" and target_status != book["status"]:
+            update_dict = {"status": next_status, "round": next_round}
+            Book.update(book, update_dict)
+            
+            print(book["title"] + "update to "+ book["status"]+ "supposed to be "+ next_status)
 
 
 # scheduler.add_job(check_book_status, 'interval', seconds=5)

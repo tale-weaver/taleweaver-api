@@ -39,22 +39,10 @@ class PageUploadConfirm(Resource):
             description=text_description,
             creator_id=creator_id,
             book_id=book_id,
-            created_at=now(),
-            interval_id=now(),
         )
         newPage.save()
-
-        book = Book.find_by_id(book_id)
-        bookname = book["title"]
-
         return {
             "msg": "success",
-            "records": {
-                "bookname": bookname,
-                "image": image_url,
-                "text_description": text_description,
-                "creator": creator,
-            },
         }, 200
 
     def get(self, book_id):
