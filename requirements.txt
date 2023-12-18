@@ -7,4 +7,4 @@ flask_jwt_extended
 python-dotenv
 Flask-Mail
 flask-cors
-
+Flask-APScheduler
