@@ -158,7 +158,7 @@ class Page:
     def update_created_at(page_id, time):
         # THIS METHOD IS ONLY USED IN INIT
 
-        if isinstance(page_id, ObjectId):
+        if not isinstance(page_id, ObjectId):
             page_id = ObjectId(page_id)
 
         page = db.pages.update_one(
@@ -167,18 +167,27 @@ class Page:
 
         return page
 
-    def voted_by_user(page_id, user_id):
-        page_oid = ObjectId(page_id)
-        print('page_oid:')
-        print(page_oid)
-        user_oid = ObjectId(user_id)
-        print('user_oid:')
-        print(user_oid)
-        page = db.pages.find_one({"_id": page_oid})
-        if user_id in page['voted_by_user_ids']:
-            db.pages.update_one({"_id": page_oid}, {
-                                "$pull": {"voted_by_user_ids": user_id}})
-        else:
-            db.pages.update_one({"_id": page_oid}, {
+    @staticmethod
+    def voted_by_user(page_id, user_id, unvote=False) -> bool:
+
+        if not isinstance(page_id, ObjectId):
+            page_id = ObjectId(page_id)
+
+        if not isinstance(user_id, ObjectId):
+            user_id = ObjectId(user_id)
+
+        page = db.pages.find_one({"_id": page_id})
+
+        if not unvote:
+            if user_id in page['voted_by_user_ids']:
+                return False
+            db.pages.update_one({"_id": page_id}, {
                                 "$push": {"voted_by_user_ids": user_id}})
-        return page
+            return True
+
+        if user_id not in page['voted_by_user_ids']:
+            return False
+
+        db.pages.update_one({"_id": page_id}, {
+                            "$pull": {"voted_by_user_ids": user_id}})
+        return True

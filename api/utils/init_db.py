@@ -100,7 +100,7 @@ def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", json_fo
         interval_ids = create_time_intervals(created_at)
 
         timestrs = [interval["time_stamp"] for interval in interval_ids]
-        target_idx, _ = find_surrounding_datetime_indices(timestrs)
+        target_idx, _ = find_surrounding_datetime_indices(timestrs, now())
         target_stage = interval_ids[target_idx]
 
         book = Book(
@@ -124,6 +124,6 @@ def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", json_fo
             Page.update_status(book.page_ids[j], "winner")
             Page.update_created_at(
                 book.page_ids[j], book.interval_ids[j*2]["time_stamp"])
-        print(f"Status and Created Time of Pages of Book {i} is updated...")
+        print(f"Status and Created Time of Pages of Book {i+1} is updated...")
 
     print("All books created...")
