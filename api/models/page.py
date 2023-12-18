@@ -29,7 +29,7 @@ class Page:
     @staticmethod
     def get_all():
         return db.pages.find()
-    
+
     @staticmethod
     def update(page, update_dict):
         page.update(update_dict)
@@ -74,7 +74,7 @@ class Page:
             formatted_book.append(item['pages'])
         print(formatted_book)
         return formatted_book
-    
+
     @staticmethod
     def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)
@@ -160,3 +160,13 @@ class Page:
         db.pages.update_one({"_id": page_id}, {
                             "$pull": {"voted_by_user_ids": user_id}})
         return True
+
+    @staticmethod
+    def find_pages_by_userid(user_id):
+
+        if not isinstance(user_id, ObjectId):
+            user_id = ObjectId(user_id)
+
+        pages = db.pages.find({"creator_id": user_id})
+
+        return pages
