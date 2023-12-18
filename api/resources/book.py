@@ -17,30 +17,28 @@ class AllStory(Resource):
     def get(self):
         username = get_jwt_identity()
         user = User.find_by_username(username)
-        user_liked_book_ids = user["liked_book_ids"]
+        user_id = user["_id"]
         all_books = Book.find_all_books()
         if not all_books:
             return {"msg": "No books"}, 400
         formatted_books = []
 
         for book in all_books:
-            bookurl = Page.find_cover_by_bookid(book["_id"])
-            numlikes = len(book["liked_by_user_ids"])
-            numcomments = len(book["comment_ids"])
+            num_likes = len(book["liked_by_user_ids"])
+            num_comments = len(book["comment_ids"])
+
             liked = False
-            if book["_id"] in user_liked_book_ids:
+            if user_id in book['liked_by_user_ids']:
                 liked = True
+
             formatted_book = {
-                "bookurl": bookurl,
+                "bookurl": book["cover"],
                 "bookname": book["title"],
                 "book_id": book["_id"],
                 "liked": liked,
-                "numlikes": numlikes,
-                "numcomments": numcomments,
+                "numlikes": num_likes,
+                "numcomments": num_comments,
                 "state": book["status"],
-                # update!!!!
-                # "time_intervals": time_intervals,
-                # update!!!!
                 "date": book["created_at"],
             }
             formatted_books.append(formatted_book)
@@ -55,27 +53,24 @@ class SingleBook(Resource):
         book = Book.find_by_id(book_id)
         if not book:
             return {"msg": "No book"}, 400
-        bookname = book["title"]
-        page_num = len(book["page_ids"])
-        numlikes = len(book["liked_by_user_ids"])
-        numcomments = len(book["comment_ids"])
-        state = book["status"]
-        pages = Page.find_pages_by_bookid(book_id, "winner")
-        if state == "voting":
-            pages_status = Page.find_voting_pages(book_id)
-        elif state == "submitting":
+
+        num_likes = len(book["liked_by_user_ids"])
+        num_comments = len(book["comment_ids"])
+        status = book["status"]
+        pages_winner = Book.find_winner_pages(book_id)
+        if status == "voting" or "submitting":
             pages_status = Page.find_pages_by_bookid(book_id)
-        elif state == "finished":
+        elif status == "finished":
             pages_status = {}
         comments = Comment.find_comment_of_book(book_id)
         formatted_book = {
-            "bookname": bookname,
-            "numlikes": numlikes,
-            "numcomments": numcomments,
-            "state": state,
-            "pages": [pages, pages_status],
-            # 狀態下的頁面是否包含投票中？
-            "page_num": page_num + 1,
+            "bookurl": book["cover"],
+            "bookname": book["title"],
+            "numlikes": num_likes,
+            "numcomments": num_comments,
+            "state": status,
+            "pages": {"winner": pages_winner, "ongoning": pages_status},
+            "time_intervals": book["interval_ids"],
             "comments": comments,
         }
         return {"msg": "success", "records": formatted_book}, 200
@@ -90,15 +85,6 @@ class LikeBook(Resource):
         if not username:
             return {"msg": "Missing username"}, 400
         Book.liked_by_user(book_id, username)
-
-        book_oid = ObjectId(book_id)
-        user = User.find_by_username(username)
-        user_liked_book_ids = user["liked_book_ids"]
-        if book_oid not in user_liked_book_ids:
-            user_liked_book_ids.append(book_oid)
-        else:
-            user_liked_book_ids.remove(book_oid)
-
         book = Book.find_by_id(book_id)
         numlikes = len(book["liked_by_user_ids"])
         return {"msg": "success", "records": {"numlikes": numlikes}}, 200
@@ -144,29 +130,3 @@ class TestFunction(Resource):
         pages = Page.find_pages_by_bookid(book_id, book["status"])
         return {"msg": "success", "records": {"pages": pages}}, 200
 
-
-class SingleBook(Resource):
-    def get(self, book_id):
-        if book_id is None:
-            return {"msg": "Missing story fields"}, 400
-        book = Book.find_by_id(book_id)
-        if not book:
-            return {"msg": "No book"}, 400
-        bookname = book["bookname"]
-        page_num = len(book["page_ids"])
-        numlikes = len(book["liked_by_user_ids"])
-        numcomments = len(book["comment_ids"])
-        state = book["status"]
-        pages = Page.find_pages_by_bookid(book_id)
-        pages_voting = Page.find_voting_pages(book_id)
-        formatted_book = {
-            "bookname": bookname,
-            "numlikes": numlikes,
-            "numcomments": numcomments,
-            "state": state,
-            "pages": pages,
-            # 狀態下的頁面是否包含投票中？
-            "pages_voting": pages_voting,
-            "page_num": page_num,
-        }
-        return {"msg": "success", "records": formatted_book}, 200

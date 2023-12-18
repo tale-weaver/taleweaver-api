@@ -29,10 +29,18 @@ class Page:
     @staticmethod
     def get_all():
         return db.pages.find()
+    
+    @staticmethod
+    def update(page, update_dict):
+        page.update(update_dict)
+        db.pages.update_one({'title': page['title']}, {
+                            '$set': page})
 
     @staticmethod
-    def find_pages_by_bookid(book_id, status):
+    def find_pages_by_bookid(book_id):
         book_oid = ObjectId(book_id)
+        book = Book.find_by_id(book_id)
+        status = book['status']
         match_condition = {}
         if status == 'finished':
             return {}
@@ -61,12 +69,13 @@ class Page:
         result = db.books.aggregate(pipeline)
         # _id of result is book_id an ['pages'] is a list of pages
         print('result:')
-        formatted_book = {}
+        formatted_book = []
         for item in result:
-            formatted_book.update(item['pages'])
+            formatted_book.append(item['pages'])
         print(formatted_book)
         return formatted_book
-
+    
+    @staticmethod
     def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)
         if include_keys and exclude_keys:
@@ -86,24 +95,7 @@ class Page:
             page = db.pages.find_one({'_id': page_oid})
         return page
 
-    def find_cover_by_bookid(book_id):
-        book_oid = ObjectId(book_id)
-        page_ids = db.books.find_one(
-            {"_id": book_oid}, {"_id": 0, "page_ids": 1})
-        cover_id = page_ids['page_ids'][0]
-        cover_oid = ObjectId(cover_id)
-        cover = db.pages.find_one({"_id": cover_oid}, {"_id": 0})['image']
-        print('cover:')
-        print(cover)
-        return cover
-
-    def save_as_fk(book_id, page_id):
-        book_oid = ObjectId(book_id)
-        page_oid = ObjectId(page_id)
-        book = db.books.update_one(
-            {"_id": book_oid}, {"$push": {"page_id": page_oid}})
-        return book
-
+    @staticmethod
     def find_creator_by_id(page_id):
         page_oid = ObjectId(page_id)
         page = db.pages.find_one({"_id": page_oid})
@@ -115,29 +107,6 @@ class Page:
         print('creator:')
         print(creator)
         return creator
-
-    def find_voting_pages(book_id):
-        book_oid = ObjectId(book_id)
-        book = Book.find_by_id(book_id)
-        current_interval_id = book['current_interval_id']
-        interval_ids = book['interval_ids']
-        current_interval_index = interval_ids.index(current_interval_id)
-        num_pages = len(book['page_ids'])
-        if num_pages < 8:
-            interval_range = {
-                '$lt': interval_ids[current_interval_index-1], '$gte': current_interval_id}
-        else:
-            interval_range = {'$lt': current_interval_id}
-        pipeline = [{
-            '$match': {
-                '$and': [
-                    {'book_id': book_oid},
-                    {'interval_id': interval_range},
-                ]
-            }
-        }]
-        pages = db.pages.aggregate(pipeline)
-        return pages
 
     @staticmethod
     def update_status(page_id, status):
