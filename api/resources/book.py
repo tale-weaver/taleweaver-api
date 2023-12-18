@@ -13,23 +13,34 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 class AllStory(Resource):
+    @jwt_required()
     def get(self):
+        username = get_jwt_identity()
+        user = User.find_by_username(username)
+        user_liked_book_ids = user["liked_book_ids"]
         all_books = Book.find_all_books()
         if not all_books:
             return {"msg": "No books"}, 400
         formatted_books = []
 
-        for order, book in enumerate(all_books, start=1):
+        for book in all_books:
             bookurl = Page.find_cover_by_bookid(book["_id"])
             numlikes = len(book["liked_by_user_ids"])
             numcomments = len(book["comment_ids"])
+            liked = False
+            if book["_id"] in user_liked_book_ids:
+                liked = True
             formatted_book = {
                 "bookurl": bookurl,
                 "bookname": book["title"],
-                "book_id": order,
+                "book_id": book["_id"],
+                "liked": liked,
                 "numlikes": numlikes,
                 "numcomments": numcomments,
                 "state": book["status"],
+                # update!!!!
+                # "time_intervals": time_intervals,
+                # update!!!!
                 "date": book["created_at"],
             }
             formatted_books.append(formatted_book)
@@ -49,25 +60,20 @@ class SingleBook(Resource):
         numlikes = len(book["liked_by_user_ids"])
         numcomments = len(book["comment_ids"])
         state = book["status"]
-        pages = Page.find_pages_by_bookid(book_id)
-        pages_voting = Page.find_voting_pages(book_id)
-        # comments = [
-        #     {
-        #         "user_icon": "user_url",
-        #         "username": "Mike",
-        #         "avatar": "string",
-        #         "content": "Wowwww It's so cool!!!",
-        #         "comment_date": "2023-12-01",
-        #     }
-        # ]
-        comments= Comment.find_comment_of_book(book_id)
+        pages = Page.find_pages_by_bookid(book_id, "winner")
+        if state == "voting":
+            pages_status = Page.find_voting_pages(book_id)
+        elif state == "submitting":
+            pages_status = Page.find_pages_by_bookid(book_id)
+        elif state == "finished":
+            pages_status = {}
+        comments = Comment.find_comment_of_book(book_id)
         formatted_book = {
             "bookname": bookname,
             "numlikes": numlikes,
             "numcomments": numcomments,
             "state": state,
-            "pages": pages,
-            "pages_voting": pages_voting,
+            "pages": [pages, pages_status],
             # 狀態下的頁面是否包含投票中？
             "page_num": page_num + 1,
             "comments": comments,
@@ -83,22 +89,15 @@ class LikeBook(Resource):
         # username = data["username"]
         if not username:
             return {"msg": "Missing username"}, 400
-        user = User.find_by_username(username, include_keys=[
-                                     "_id", "liked_book_ids"])
-
-        user_id = user["_id"]
-        user_liked_book_ids = user["liked_book_ids"]
-
-        Book.liked_by_user(book_id, user_id)
+        Book.liked_by_user(book_id, username)
 
         book_oid = ObjectId(book_id)
+        user = User.find_by_username(username)
+        user_liked_book_ids = user["liked_book_ids"]
         if book_oid not in user_liked_book_ids:
             user_liked_book_ids.append(book_oid)
         else:
             user_liked_book_ids.remove(book_oid)
-
-        # AttributeError: 'dict' object has no attribute 'username'
-        # User.update(user, {"liked_book_ids": user_liked_book_ids})
 
         book = Book.find_by_id(book_id)
         numlikes = len(book["liked_by_user_ids"])
@@ -115,7 +114,6 @@ class CreateBook(Resource):
         images_folder = os.path.join(app.root_path, "data")
         os.makedirs(images_folder, exist_ok=True)
 
-        # Update the file path to use the 'images' directory
         filepath = os.path.join(images_folder, filename)
         file.save(filepath)
 
@@ -140,12 +138,18 @@ class CreateBook(Resource):
         }, 200
 
 
+class TestFunction(Resource):
+    def get(self, book_id):
+        book = Book.find_by_id(book_id)
+        pages = Page.find_pages_by_bookid(book_id, book["status"])
+        return {"msg": "success", "records": {"pages": pages}}, 200
+
+
 class SingleBook(Resource):
-    def get(self,book_id):
-        book_id = request.args.get("story_id", default=None, type=str)
+    def get(self, book_id):
         if book_id is None:
             return {"msg": "Missing story fields"}, 400
-        book = Book.find_by_bookid(book_id)
+        book = Book.find_by_id(book_id)
         if not book:
             return {"msg": "No book"}, 400
         bookname = book["bookname"]
@@ -154,6 +158,7 @@ class SingleBook(Resource):
         numcomments = len(book["comment_ids"])
         state = book["status"]
         pages = Page.find_pages_by_bookid(book_id)
+        pages_voting = Page.find_voting_pages(book_id)
         formatted_book = {
             "bookname": bookname,
             "numlikes": numlikes,
@@ -161,22 +166,7 @@ class SingleBook(Resource):
             "state": state,
             "pages": pages,
             # 狀態下的頁面是否包含投票中？
+            "pages_voting": pages_voting,
             "page_num": page_num,
         }
         return {"msg": "success", "records": formatted_book}, 200
-
-
-# class LikeBook(Resource):
-#     def post(self, book_id):
-#         data = request.get_json()
-#         username = data["username"]
-#         if not username:
-#             return {"msg": "Missing username"}, 400
-#         user = User.find_by_username(username, include_keys=["_id"])
-#         user_id = user["_id"]
-#         print('this is user_id in LikeBook:')
-#         print(user_id)
-#         book = Book.liked_by_user(book_id, user_id)
-#         print(book['liked_by_user_ids'])
-#         numlikes = len(book["liked_by_user_ids"])+1
-#         return {"msg": "success", "records": {"numlikes": numlikes}}, 200

@@ -15,7 +15,6 @@ from api.config.config import Config
 class PageUploadConfirm(Resource):
     @jwt_required()
     def post(self, book_id):
-        # print("book_id: " + str(book_id))
         text_description = request.form.get("text_description")
         # creator = request.form.get("creator")
         creator = get_jwt_identity()
@@ -23,8 +22,6 @@ class PageUploadConfirm(Resource):
         file = request.files.get("file")
         filename = secure_filename(file.filename)
         images_folder = os.path.join(app.root_path, "data", creator)
-        # print("text_description: " + str(text_description))
-        # print("creator: " + str(creator))
         if not file:
             return {"msg": "Missing file"}, 400
         if not creator:
@@ -43,7 +40,7 @@ class PageUploadConfirm(Resource):
             creator_id=creator_id,
             book_id=book_id,
             created_at=now(),
-            interval_id=1,
+            interval_id=now(),
         )
         newPage.save()
 
@@ -80,18 +77,17 @@ class VotePage(Resource):
 
         if not username:
             return {"msg": "Missing username"}, 400
-        user = User.find_by_username(username, include_keys=[
-                                     "_id"])  # "voted_book_ids"
+        user = User.find_by_username(username)
         user_id = user["_id"]
 
-        # user_voted = user["voted_book_ids"]
-        # if page_id in user_voted:
-        #     user_voted.remove(page_id)
-        # else:
-        #     user_voted.append(page_id)
-        # User.update(user, {"voted_book_ids": user_voted})
+        user_voted = user["voted_book_ids"]
+        if page_id in user_voted:
+            return
+        else:
+            user_voted.append(page_id)
+        User.update(user, {"voted_book_ids": user_voted})
 
         Page.voted_by_user(page_id, user_id)
         page = Page.find_by_id(page_id)
-        numvotes = len(page['voted_by_user_ids'])
-        return {"msg": "success", "records": {"numvotes": numvotes}}, 200
+        num_votes = len(page['voted_by_user_ids'])
+        return {"msg": "success", "records": {"num_votes": num_votes}}, 200

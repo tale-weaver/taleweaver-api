@@ -1,5 +1,5 @@
 from api.utils.db import db
-from api.utils.time import now
+from api.utils.time import now, create_time_intervals
 from api.models.user import User
 from bson import ObjectId
 from bson.json_util import loads, dumps
@@ -9,12 +9,12 @@ class Book:
     def __init__(
         self,
         title,
-        current_interval_id,
+        current_interval_id = now(),
         status="submitting",
         page_ids = [],
         comment_ids = [],
         liked_by_user_ids = [],
-        interval_ids = [],
+        interval_ids = create_time_intervals(now(), 120, 16),
         created_at = now(),
         updated_at = now(),
     ):
@@ -35,11 +35,6 @@ class Book:
         valid_status = ["finished", "submitting", "voting"]
         if status not in valid_status:
             raise ValueError("Status must be one of {}".format(valid_status))
-    
-
-    
-
-
 
     @staticmethod
     def find_by_id(book_id, include_keys=[], exclude_keys=[]):
@@ -76,19 +71,17 @@ class Book:
         book = db.books.find_one({"_id": book_oid})
         return book
     
-    def liked_by_user(book_id, user_id):
+    def liked_by_user(book_id, username):
         book_oid = ObjectId(book_id)
+        book = db.books.find_one({"_id": book_oid})
+        user = User.find_by_username(username)
+        user_id = user["_id"]
         user_oid = ObjectId(user_id)
-        book = db.books.find_one({"_id": book_oid})
-        if user_id in book['liked_by_user_ids']:
-            db.books.update_one({"_id": book_oid}, {"$pull": {"liked_by_user_ids": user_id}})
-            
-            # User.update()
-            
+        if user_oid in book['liked_by_user_ids']:
+            db.books.update_one({"_id": book_oid}, {"$pull": {"liked_by_user_ids": user_oid}})
         else:
-            db.books.update_one({"_id": book_oid}, {"$push": {"liked_by_user_ids": user_id}})
+            db.books.update_one({"_id": book_oid}, {"$push": {"liked_by_user_ids": user_oid}})
         book = db.books.find_one({"_id": book_oid})
-        # 還沒做 User 的 liked_book_ids 更新
         return book
     
     def update_status_by_bookid(book_id, status):
@@ -104,6 +97,18 @@ class Book:
         db.books.update_one({"_id": book_oid}, {"$push": {"comment_ids": comment_oid}})
         db.users.update_one({"_id": user_oid},{"$push": {"comment_ids": comment_oid}})
         book = db.books.find_one({"_id": book_oid})
+        return book
+    
+    def update_current_interval_id(book_id):
+        book_oid = ObjectId(book_id)
+        book = Book.find_by_id(book_oid)
+        current_interval_id = book['current_interval_id']
+        interval_ids = book['interval_ids']
+        if current_interval_id == interval_ids[-1]:
+            return
+        else:
+            db.books.update_one({"_id": book_oid}, {"$set": {"current_interval_id": interval_ids[interval_ids.index(current_interval_id) + 1]}})
+        book = Book.find_by_id(book_id)
         return book
     
     

@@ -20,7 +20,7 @@ class User:
                  book_ids=[],
                  comment_ids=[],
                  liked_book_ids=[],
-                 saved_book_ids=[]
+                 voted_page_ids=[]
                  ):
         self.username = username
         self.password_hash = bcrypt.generate_password_hash(
@@ -36,7 +36,7 @@ class User:
         self.book_ids = book_ids
         self.comment_ids = comment_ids
         self.liked_book_ids = liked_book_ids
-        self.saved_book_ids = saved_book_ids
+        self.voted_page_ids = voted_page_ids
 
     def save(self):
         db.users.insert_one(self.__dict__)
