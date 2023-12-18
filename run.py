@@ -15,9 +15,6 @@ from api.utils.init_db import db_init
 from api.utils.json_encoder import MongoJSONEncoder
 from api.utils.status_checker import check_book_status
 
-from api.models.page import Page
-from api.models.book import Book
-
 from api.config.config import Config
 
 
@@ -43,28 +40,34 @@ JWTManager(app)
 
 api = Api(app)
 
-api.add_resource(TestFunction, '/test/<book_id>')
-api.add_resource(AllStory, '/story')
-api.add_resource(PageUploadConfirm, '/story/upload/<book_id>')
-api.add_resource(SingleBook, '/story/<book_id>')
-api.add_resource(VotePage, '/story/<page_id>/vote')
-api.add_resource(LikeBook, '/story/<book_id>/like')
+# user related apis
 api.add_resource(Signup, '/user/signup')
 api.add_resource(ResendVerificationEmail, '/user/resend_verification_email')
 api.add_resource(VerifyEmail, '/user/verify')
 api.add_resource(LoginWithCredentials, '/user/login_with_credentials')
 api.add_resource(UserResource, '/user')
+
+# story / book related apis
+api.add_resource(AllStory, '/story')
+api.add_resource(PageUploadConfirm, '/story/upload/<book_id>')
+api.add_resource(SingleBook, '/story/<book_id>')
+api.add_resource(VotePage, '/story/<page_id>/vote')
+api.add_resource(LikeBook, '/story/<book_id>/like')
 api.add_resource(AddComment, '/story/<book_id>/comment')
 
+# test
+api.add_resource(TestFunction, '/test/<book_id>')
+
 scheduler = APScheduler()
+
 
 @scheduler.task('interval', id='my_task', seconds=5)
 def check_status():
     check_book_status()
+
 
 if __name__ == '__main__':
     # scheduler.start()
     with app.app_context():
         db_init()
     app.run()
-    
