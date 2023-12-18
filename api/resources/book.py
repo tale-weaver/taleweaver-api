@@ -17,7 +17,7 @@ class AllStory(Resource):
     def get(self):
         username = get_jwt_identity()
         user = User.find_by_username(username)
-        user_liked_book_ids = user["liked_book_ids"]
+        user_id = user["_id"]
         all_books = Book.find_all_books()
         if not all_books:
             return {"msg": "No books"}, 400
@@ -28,7 +28,7 @@ class AllStory(Resource):
             num_comments = len(book["comment_ids"])
 
             liked = False
-            if book["_id"] in user_liked_book_ids:
+            if user_id in book['liked_by_user_ids']:
                 liked = True
 
             formatted_book = {
@@ -54,7 +54,6 @@ class SingleBook(Resource):
         if not book:
             return {"msg": "No book"}, 400
 
-        page_num = len(book["page_ids"])
         num_likes = len(book["liked_by_user_ids"])
         num_comments = len(book["comment_ids"])
         status = book["status"]
@@ -71,7 +70,7 @@ class SingleBook(Resource):
             "numcomments": num_comments,
             "state": status,
             "pages": {"winner": pages_winner, "ongoning": pages_status},
-            "page_num": page_num + 1,
+            "time_intervals": book["interval_ids"],
             "comments": comments,
         }
         return {"msg": "success", "records": formatted_book}, 200
@@ -86,15 +85,6 @@ class LikeBook(Resource):
         if not username:
             return {"msg": "Missing username"}, 400
         Book.liked_by_user(book_id, username)
-
-        book_oid = ObjectId(book_id)
-        user = User.find_by_username(username)
-        user_liked_book_ids = user["liked_book_ids"]
-        if book_oid not in user_liked_book_ids:
-            user_liked_book_ids.append(book_oid)
-        else:
-            user_liked_book_ids.remove(book_oid)
-
         book = Book.find_by_id(book_id)
         numlikes = len(book["liked_by_user_ids"])
         return {"msg": "success", "records": {"numlikes": numlikes}}, 200
