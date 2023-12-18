@@ -3,32 +3,32 @@ from api.utils.db import db
 from api.models.book import Book
 from bson import ObjectId
 
+
 class Page:
     def __init__(
         self,
         image,
+        title,
         description,
-        book_id,
         creator_id,
-        interval_id = now(),
-        voted_by_user_ids = [],
-        created_at = now(),
-        updated_at = now(),
-        status='ongoing',
+        status="ongoing",
+        voted_by_user_ids=[],
+        created_at=now(),
     ):
-        
         self.image = image
+        self.title = title
         self.description = description
-        self.status = status
-        self.book_id = book_id
-        self.interval_id = interval_id
         self.creator_id = creator_id
+        self.status = status
         self.voted_by_user_ids = voted_by_user_ids
         self.created_at = created_at
-        self.updated_at = updated_at
 
     def save(self):
         db.pages.insert_one(self.__dict__)
+
+    @staticmethod
+    def get_all():
+        return db.pages.find()
 
     @staticmethod
     def find_pages_by_bookid(book_id, status):
@@ -37,8 +37,8 @@ class Page:
         if status == 'finished':
             return {}
         if status == 'submitting' or 'voting':
-            match_condition = {"$match": {"pages.status": "ongoing" }}
-        
+            match_condition = {"$match": {"pages.status": "ongoing"}}
+
         pipeline = [
             {"$match": {"_id": book_oid}},
             {"$unwind": "$page_ids"},
@@ -88,7 +88,8 @@ class Page:
 
     def find_cover_by_bookid(book_id):
         book_oid = ObjectId(book_id)
-        page_ids = db.books.find_one({"_id": book_oid}, {"_id": 0, "page_ids": 1})
+        page_ids = db.books.find_one(
+            {"_id": book_oid}, {"_id": 0, "page_ids": 1})
         cover_id = page_ids['page_ids'][0]
         cover_oid = ObjectId(cover_id)
         cover = db.pages.find_one({"_id": cover_oid}, {"_id": 0})['image']
@@ -99,7 +100,8 @@ class Page:
     def save_as_fk(book_id, page_id):
         book_oid = ObjectId(book_id)
         page_oid = ObjectId(page_id)
-        book = db.books.update_one({"_id": book_oid}, {"$push": {"page_id": page_oid}})
+        book = db.books.update_one(
+            {"_id": book_oid}, {"$push": {"page_id": page_oid}})
         return book
 
     def find_creator_by_id(page_id):
@@ -113,7 +115,7 @@ class Page:
         print('creator:')
         print(creator)
         return creator
-    
+
     def find_voting_pages(book_id):
         book_oid = ObjectId(book_id)
         book = Book.find_by_id(book_id)
@@ -122,30 +124,49 @@ class Page:
         current_interval_index = interval_ids.index(current_interval_id)
         num_pages = len(book['page_ids'])
         if num_pages < 8:
-            interval_range = { '$lt': interval_ids[current_interval_index-1], '$gte': current_interval_id}
+            interval_range = {
+                '$lt': interval_ids[current_interval_index-1], '$gte': current_interval_id}
         else:
-            interval_range = { '$lt': current_interval_id }
+            interval_range = {'$lt': current_interval_id}
         pipeline = [{
-            '$match':{
-            '$and':[
-                {'book_id': book_oid},
-                {'interval_id': interval_range},
-            ]
+            '$match': {
+                '$and': [
+                    {'book_id': book_oid},
+                    {'interval_id': interval_range},
+                ]
             }
         }]
         pages = db.pages.aggregate(pipeline)
         return pages
 
-    def update_status_as_winner(page_id):
-        page_oid = ObjectId(page_id)
-        page = db.pages.update_one({"_id": page_oid}, {"$set": {"status": "winner"}})
+    @staticmethod
+    def update_status(page_id, status):
+
+        if isinstance(page_id, ObjectId):
+            page_id = ObjectId(page_id)
+
+        assert status in [
+            "winner", "loser"], "Status must be either 'winner' or 'loser'"
+
+        page = db.pages.update_one(
+            {"_id": page_id}, {"$set": {"status": status}}
+        )
+
         return page
-    
-    def update_status_as_loser(page_id):
-        page_oid = ObjectId(page_id)
-        page = db.pages.update_one({"_id": page_oid}, {"$set": {"status": "loser"}})
+
+    @staticmethod
+    def update_created_at(page_id, time):
+        # THIS METHOD IS ONLY USED IN INIT
+
+        if isinstance(page_id, ObjectId):
+            page_id = ObjectId(page_id)
+
+        page = db.pages.update_one(
+            {"_id": page_id}, {"$set": {"created_at": time}}
+        )
+
         return page
-    
+
     def voted_by_user(page_id, user_id):
         page_oid = ObjectId(page_id)
         print('page_oid:')
@@ -155,7 +176,9 @@ class Page:
         print(user_oid)
         page = db.pages.find_one({"_id": page_oid})
         if user_id in page['voted_by_user_ids']:
-            db.pages.update_one({"_id": page_oid}, {"$pull": {"voted_by_user_ids": user_id}})
+            db.pages.update_one({"_id": page_oid}, {
+                                "$pull": {"voted_by_user_ids": user_id}})
         else:
-            db.pages.update_one({"_id": page_oid}, {"$push": {"voted_by_user_ids": user_id}})
+            db.pages.update_one({"_id": page_oid}, {
+                                "$push": {"voted_by_user_ids": user_id}})
         return page

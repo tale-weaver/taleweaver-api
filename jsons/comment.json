@@ -1,0 +1,402 @@
+[
+  {
+    "review": "An enchanting journey through a magical world. Captivating from start to finish!",
+    "rating": 4.7
+  },
+  {
+    "review": "A heartwarming tale that beautifully weaves together themes of love and courage.",
+    "rating": 4.5
+  },
+  {
+    "review": "Intriguing plot twists and deeply developed characters. A truly compelling read.",
+    "rating": 4.8
+  },
+  {
+    "review": "A delightful mix of humor and whimsy. Perfect for readers who enjoy a light-hearted adventure.",
+    "rating": 4.2
+  },
+  {
+    "review": "A touching story that explores complex family dynamics with sensitivity and grace.",
+    "rating": 4.6
+  },
+  {
+    "review": "An imaginative and thrilling journey that keeps you on the edge of your seat.",
+    "rating": 4.9
+  },
+  {
+    "review": "A beautifully written exploration of identity and self-discovery. Highly recommended.",
+    "rating": 4.4
+  },
+  {
+    "review": "A masterful blend of mystery and suspense. Keeps you guessing until the very end.",
+    "rating": 4.3
+  },
+  {
+    "review": "A vivid and captivating world filled with wonder and excitement.",
+    "rating": 4.6
+  },
+  {
+    "review": "An inspiring tale of resilience and hope in the face of adversity.",
+    "rating": 4.5
+  },
+  {
+    "review": "The plot was predictable and lacked originality. Disappointing read.",
+    "rating": 2.0
+  },
+  {
+    "review": "Characters were underdeveloped and unrelatable. Struggled to finish the book.",
+    "rating": 1.8
+  },
+  {
+    "review": "Poorly written with numerous plot holes. Couldn't get past the first few chapters.",
+    "rating": 1.5
+  },
+  {
+    "review": "The storyline was confusing and poorly structured. Very hard to follow.",
+    "rating": 2.1
+  },
+  {
+    "review": "Lacked depth and failed to evoke any emotional response.",
+    "rating": 2.2
+  },
+  {
+    "review": "Too many clichés and a predictable ending. Not very engaging.",
+    "rating": 2.3
+  },
+  {
+    "review": "The writing style was tedious and repetitive. Lost interest quickly.",
+    "rating": 1.9
+  },
+  {
+    "review": "Uninspiring and dull. The story never really seemed to take off.",
+    "rating": 2.0
+  },
+  {
+    "review": "Failed to deliver on its promising premise. Quite a letdown.",
+    "rating": 2.4
+  },
+  {
+    "review": "The dialogue was awkward and unnatural. It detracted from the story.",
+    "rating": 1.7
+  },
+  {
+    "review": "Full of stereotypes and lacking in genuine creativity.",
+    "rating": 2.1
+  },
+  {
+    "review": "The pacing was off, making the book feel longer than it was.",
+    "rating": 2.2
+  },
+  {
+    "review": "Not what I expected. The themes were handled poorly.",
+    "rating": 2.3
+  },
+  {
+    "review": "The narrative was disjointed and hard to follow. Needed better editing.",
+    "rating": 1.6
+  },
+  {
+    "review": "Overly simplistic and not very compelling. Missed the mark for me.",
+    "rating": 2.0
+  },
+  {
+    "review": "Tried too hard to be profound but ended up being pretentious.",
+    "rating": 1.8
+  },
+  {
+    "review": "The climax was underwhelming and left many questions unanswered.",
+    "rating": 2.4
+  },
+  {
+    "review": "Characters lacked depth and the plot was unengaging.",
+    "rating": 2.1
+  },
+  {
+    "review": "More of the same old tropes. Nothing new or interesting.",
+    "rating": 2.2
+  },
+  {
+    "review": "The book lacked a clear direction and purpose. Very unsatisfying.",
+    "rating": 1.9
+  },
+  {
+    "review": "The book was okay, I guess 🤷. Kinda average, but not bad.",
+    "rating": 3.0
+  },
+  {
+    "review": "Had some cool parts, but overall just meh 🙄. Not a total waste of time though.",
+    "rating": 3.2
+  },
+  {
+    "review": "Decent read, nothing special. Characters were alright 👌.",
+    "rating": 3.1
+  },
+  {
+    "review": "Plot was kinda all over the place, but had its moments 🌟.",
+    "rating": 3.0
+  },
+  {
+    "review": "Not the worst, not the best, just middle of the road 🛣️.",
+    "rating": 3.0
+  },
+  {
+    "review": "Some parts were lit 🔥, but others just fell flat 📉.",
+    "rating": 3.3
+  },
+  {
+    "review": "Writing was decent, but the story didn't really hit different, you know? 🤔",
+    "rating": 3.2
+  },
+  {
+    "review": "It's a solid 'aight' from me. Not super engaging, but not boring either 🤷‍♂️.",
+    "rating": 3.1
+  },
+  {
+    "review": "Kinda expected more, but it was cool in some parts 🆒.",
+    "rating": 3.0
+  },
+  {
+    "review": "A chill read, but nothing to write home about 🏠.",
+    "rating": 3.0
+  },
+  {
+    "review": "Was pretty okay, but I wasn't super invested in it 📚.",
+    "rating": 3.1
+  },
+  {
+    "review": "Characters were fine, but the plot didn't really pop off 🎇.",
+    "rating": 3.2
+  },
+  {
+    "review": "An average book, but I liked some of the vibes ✌️.",
+    "rating": 3.0
+  },
+  {
+    "review": "Pretty standard stuff, nothing groundbreaking 🌍.",
+    "rating": 3.0
+  },
+  {
+    "review": "It was a decent time pass, but wouldn't read again 🔄.",
+    "rating": 3.0
+  },
+  {
+    "review": "Not bad, not great, just kinda there, you know? 😐",
+    "rating": 3.1
+  },
+  {
+    "review": "Had potential, but didn't fully deliver. Still, it was alright 👍.",
+    "rating": 3.2
+  },
+  {
+    "review": "A few cool moments, but mostly just average 🆗.",
+    "rating": 3.0
+  },
+  {
+    "review": "Not a total snooze fest, but not super exciting either 😴💤.",
+    "rating": 3.1
+  },
+  {
+    "review": "It's a solid middle-of-the-road book. Not too bad, not too good 🤨.",
+    "rating": 3.0
+  },
+  {
+    "review": "OMG 😱, this book was everything! Totally blew my mind 🤯! #MustRead 📚💯",
+    "rating": 4.8
+  },
+  {
+    "review": "Literally couldn't put it down! It was like, sooo good 🌟🌟🌟! Obsessed is an understatement 😍📖!",
+    "rating": 4.9
+  },
+  {
+    "review": "This book is a whole vibe 🌈✨. Loved every second of it! 💖💕",
+    "rating": 4.7
+  },
+  {
+    "review": "Y'all, this story is FIRE 🔥🔥! Had me hooked from page one 🎣📚!",
+    "rating": 4.8
+  },
+  {
+    "review": "Can we talk about this masterpiece?! 🎨👏 Absolute genius! Mind = blown 🤯🤩",
+    "rating": 5.0
+  },
+  {
+    "review": "This book is the tea 🍵! Spilled some major truth and wisdom 🧠💫. Love, love, LOVE it! 😘",
+    "rating": 4.9
+  },
+  {
+    "review": "I'm shooketh! This book is on another level 🚀🌌. Sooo good! 🙌",
+    "rating": 4.8
+  },
+  {
+    "review": "A true gem 💎! Characters are everything, and the plot is just WOW 🤩👌!",
+    "rating": 4.7
+  },
+  {
+    "review": "This book snatched my wig! It's that good! Slayed my whole existence 🐉👑!",
+    "rating": 4.9
+  },
+  {
+    "review": "I'm living for this book! It's everything and more 🌟🌠! #NewFave",
+    "rating": 4.8
+  },
+  {
+    "review": "The vibes are immaculate! Felt all the feels with this one 😭💖🙏!",
+    "rating": 4.7
+  },
+  {
+    "review": "This book is a whole mood 🌈🔥! Couldn't love it more if I tried 💘!",
+    "rating": 4.9
+  },
+  {
+    "review": "10/10 would recommend! It's a rollercoaster of emotions 🎢💓! So impactful 🌟!",
+    "rating": 4.8
+  },
+  {
+    "review": "This book is the bomb dot com 💣💥! Pure gold 🏅🌟!",
+    "rating": 4.9
+  },
+  {
+    "review": "It's like this book was written for my soul 📝💫. Absolutely adored it! 😍",
+    "rating": 4.8
+  },
+  {
+    "review": "This book is next level awesome! 🚀🌠 Blew my expectations out of the water 🌊🏄‍♂️!",
+    "rating": 4.9
+  },
+  {
+    "review": "A masterpiece of our generation! 🎨👑 So powerful and moving! 🌪️💖",
+    "rating": 5.0
+  },
+  {
+    "review": "This book changed my life! 🌟🙌 Real talk, it's a game-changer 🎮🔄!",
+    "rating": 4.9
+  },
+  {
+    "review": "Can't express how much I love this book! It's beyond amazing! 🚀💕🌈",
+    "rating": 4.8
+  },
+  {
+    "review": "This book is the definition of perfection! 🌈👌 Every page is a journey 🗺️💫!",
+    "rating": 4.9
+  },
+  {
+    "review": "Okay, so I was like, really excited to read this book 📚, but OMG, it was such a letdown 😒. The plot was all over the place, like, make it make sense, please 🙄. And the characters? I couldn't relate to them at all. They were so bland 🥱. Totally not worth my time 🕒.",
+    "rating": 1.5
+  },
+  {
+    "review": "I literally had to force myself to finish this book 📖. The storyline was so predictable and boring 😴. It felt like I've read this a thousand times before. Zero originality 🚫. And don't even get me started on the dialogue – so cringe 🤦‍♂️.",
+    "rating": 1.4
+  },
+  {
+    "review": "Yikes, this book was a hot mess 🔥. The writing was so choppy, and the plot made no sense 🤷‍♀️. It was like the author just threw a bunch of random events together and called it a story 🤔. And the ending? What even was that? 🤯",
+    "rating": 1.3
+  },
+  {
+    "review": "This book was hyped up so much, but it was such a disappointment 😞. The characters were one-dimensional and the plot was non-existent 🚫. It was like reading a bad soap opera 📺. I can't believe I wasted my time on this 🕰️.",
+    "rating": 1.6
+  },
+  {
+    "review": "I'm sorry, but this book is just bad 🤮. The writing is amateurish, and the story is so dull 🥱. I kept waiting for something interesting to happen, but nope, nothing 🚫. It was a struggle to get through each page 📄.",
+    "rating": 1.2
+  },
+  {
+    "review": "Ugh, this book was a trainwreck 🚂💥. The plot was confusing, the characters were annoying, and the writing was just awful 🤢. I don't get the hype at all. Do yourself a favor and skip this one 🙅‍♀️.",
+    "rating": 1.4
+  },
+  {
+    "review": "Honestly, this book was a total snoozefest 😴. The story was so slow and nothing ever happened 🐌. The characters were forgettable and the dialogue was so cheesy 🧀. Definitely not recommended 🚫.",
+    "rating": 1.5
+  },
+  {
+    "review": "I had high hopes for this book, but it was a major flop 📉. The story was cliche and the characters were stereotypical 🤦‍♀️. It felt like a waste of paper 🌲. Seriously, don't bother with this one.",
+    "rating": 1.3
+  },
+  {
+    "review": "This book was trying too hard to be deep, but it just fell flat 😑. The themes were handled poorly and the plot was all over the place 🌪️. It was more frustrating than enjoyable 🙄.",
+    "rating": 1.4
+  },
+  {
+    "review": "Not gonna lie, this was probably one of the worst books I've ever read 📚👎. The writing was terrible, and the plot was so unbelievable 🙄. I couldn't even finish it, it was that bad 🚮.",
+    "rating": 1.1
+  },
+  {
+    "review": "I don't usually write reviews, but I had to for this one because it was so bad 😤. The characters were so unlikable and the plot was a mess 🗑️. It was a struggle to get through each chapter 🥵.",
+    "rating": 1.2
+  },
+  {
+    "review": "This book was a huge disappointment 😔. I was expecting so much more, but it just didn't deliver 📦. The story was weak and the characters were flat 📉. Not worth your time.",
+    "rating": 1.3
+  },
+  {
+    "review": "I wanted to like this book, I really did, but it was just bad 🤮. The writing was clunky and the plot was nonsensical 🤷‍♂️. It felt like a chore to read it 🧹.",
+    "rating": 1.4
+  },
+  {
+    "review": "This book was a total disaster 🌪️. The plot was disjointed, and the characters were so poorly developed 📚. I can't believe I wasted my money on this 💸.",
+    "rating": 1.5
+  },
+  {
+    "review": "I'm all for giving books a chance, but this one was just terrible 🙅‍♂️. The story was boring, and the writing was amateurish 🚫. I couldn't even finish it.",
+    "rating": 1.2
+  },
+  {
+    "review": "This book was a big nope for me 🚫. The plot was ridiculous, and the characters were so unrealistic 🤡. It was like reading a bad fanfiction 📖.",
+    "rating": 1.3
+  },
+  {
+    "review": "I rarely give up on books, but I had to with this one 🏳️. The story was going nowhere, and the writing was just painful to read 🤕. Not recommended at all.",
+    "rating": 1.1
+  },
+  {
+    "review": "This book was an absolute trainwreck from start to finish 🚂💥. The plot was convoluted, and the characters were insufferable 😖. Save your time and skip this one.",
+    "rating": 1.4
+  },
+  {
+    "review": "I had such high expectations, but this book was a massive letdown 😞. The story was unoriginal, and the writing was subpar 📉. Definitely not worth the hype.",
+    "rating": 1.2
+  },
+  {
+    "review": "This book was just... bad. The plot was nonsensical, the characters were flat, and the writing was lackluster 🤷‍♀️. I don't get why it's so popular 🤔.",
+    "rating": 1.3
+  },
+  {
+    "review": "I found this book to be quite disappointing. The story lacked substance and the writing style was far too modern for my taste. Not what I expected.",
+    "rating": 2.0
+  },
+  {
+    "review": "Back in my day, books had depth and character. This one, however, was shallow and unimpressive. The author missed the mark on this.",
+    "rating": 1.8
+  },
+  {
+    "review": "The plot was convoluted and hard to follow. It seems like writers these days don't value a good, clear narrative.",
+    "rating": 1.5
+  },
+  {
+    "review": "Too much fluff and not enough substance. I prefer the classics – they knew how to write back then.",
+    "rating": 2.1
+  },
+  {
+    "review": "I couldn't connect with any of the characters. They don't make them like Atticus Finch anymore.",
+    "rating": 2.2
+  },
+  {
+    "review": "The storyline was all over the place. I miss the days when stories were straightforward and meaningful.",
+    "rating": 2.0
+  },
+  {
+    "review": "This book was a waste of time. The plot was weak, and the dialogue didn't ring true. Not like the good old days of literature.",
+    "rating": 1.9
+  },
+  {
+    "review": "I found the writing style to be overly simplistic and the plot predictable. Literature has certainly seen better days.",
+    "rating": 2.0
+  },
+  {
+    "review": "Not a fan of this modern writing. Where's the depth, the eloquence? This book lacks the charm of the classics.",
+    "rating": 2.3
+  },
+  {
+    "review": "The author tried too hard to be trendy and it fell flat. I prefer books with more traditional storytelling.",
+    "rating": 2.1
+  }
+]

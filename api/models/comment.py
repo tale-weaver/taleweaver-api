@@ -10,21 +10,29 @@ db = client["mydatabase"]
 
 # add comment -> comment_id, push comment_id into book.comment[arr]
 # get comment ->In Book call find_comment_of_book()->return content
+
+
 class Comment:
     def __init__(
-            self, 
-            commenter_id, 
-            content, 
-            created_at=now(),
-            updated_at=now(),
-        ):
+        self,
+        commenter_id,
+        review,
+        rating,
+        created_at=now(),
+        updated_at=now(),
+    ):
         self.commenter_id = commenter_id
-        self.content = content
-        self.created_at =  created_at
+        self.review = review
+        self.rating = rating
+        self.created_at = created_at
         self.updated_at = updated_at
-        
+
     def save(self):
         db.comments.insert_one(self.__dict__)
+
+    @staticmethod
+    def get_all():
+        return db.comments.find()
 
     @staticmethod
     def find_comment_of_book(book_id):
@@ -52,4 +60,3 @@ class Comment:
         ]
         result = db.books.aggregate(pipeline)
         return result
-

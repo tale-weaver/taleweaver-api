@@ -1,0 +1,114 @@
+[
+  {
+    "username": "Apple Banana",
+    "password": "123123123",
+    "email": "apple_banana@gmail.com",
+    "source": "credentials",
+    "role": "user"
+  },
+  {
+    "username": "Cherry Durian",
+    "password": "123123123",
+    "email": "cherry_durian@gmail.com",
+    "source": "credentials",
+    "role": "user"
+  },
+  {
+    "username": "Elderberry Fig",
+    "password": "123123123",
+    "email": "elderberry_fig@example.com",
+    "source": "credentials",
+    "role": "user"
+  },
+  {
+    "username": "Grapefruit Honeydew",
+    "password": "123123123",
+    "email": "grapefruit_honeydew@example.com",
+    "source": "credentials",
+    "role": "user"
+  },
+  {
+    "username": "Ivy Kiwi",
+    "password": "123123123",
+    "email": "ivy_kiwi@example.com",
+    "source": "credentials",
+    "role": "user"
+  },
+  {
+    "username": "Lemon Mango",
+    "password": "123123123",
+    "email": "lemon_mango@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Nectarine Olive",
+    "password": "123123123",
+    "email": "nectarine_olive@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Papaya Quince",
+    "password": "123123123",
+    "email": "papaya_quince@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Raspberry Strawberry",
+    "password": "123123123",
+    "email": "raspberry_strawberry@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Tangerine Ugli",
+    "password": "123123123",
+    "email": "tangerine_ugli@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Vanilla Watermelon",
+    "password": "123123123",
+    "email": "vanilla_watermelon@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Xigua Yuzu",
+    "password": "123123123",
+    "email": "xigua_yuzu@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Zucchini Avocado",
+    "password": "123123123",
+    "email": "zucchini_avocado@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Blueberry Cantaloupe",
+    "password": "123123123",
+    "email": "blueberry_cantaloupe@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Date Elderberry",
+    "password": "123123123",
+    "email": "date_elderberry@example.com",
+    "source": "credentials",
+    "role": "premium"
+  },
+  {
+    "username": "Fig Grape",
+    "password": "123123123",
+    "email": "fig_grape@example.com",
+    "source": "credentials",
+    "role": "premium"
+  }
+]
