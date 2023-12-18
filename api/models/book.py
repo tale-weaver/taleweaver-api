@@ -10,6 +10,7 @@ class Book:
         title,
         cover,
         description,
+        cover="",
         page_ids=[],
         comment_ids=[],
         liked_by_user_ids=[],
@@ -20,6 +21,7 @@ class Book:
         self.title = title
         self.cover = cover
         self.description = description
+        self.cover = cover
         self.page_ids = page_ids
         self.comment_ids = comment_ids
         self.liked_by_user_ids = liked_by_user_ids
@@ -39,6 +41,18 @@ class Book:
 
         if status not in valid_status:
             raise ValueError("Status must be one of {}".format(valid_status))
+
+    @staticmethod
+    def get_all():
+        return db.books.find()
+
+    @staticmethod
+    def update_cover(book_id, cover_url):
+
+        if not isinstance(book_id, ObjectId):
+            book_id = ObjectId(book_id)
+
+        db.books.update_one({"_id": book_id}, {"$set": {"cover": cover_url}})
 
     @staticmethod
     def find_by_id(book_id, include_keys=[], exclude_keys=[]):

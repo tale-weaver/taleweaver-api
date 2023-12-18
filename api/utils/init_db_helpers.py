@@ -10,7 +10,7 @@ def extract_and_distribute_images(zip_path, base_folder, usernames):
 
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         image_files = [file for file in zip_ref.namelist(
-        ) if file.endswith(('.jpg', '.jpeg', '.png'))]
+        ) if file.endswith(('.jpg', '.jpeg', '.png')) and not os.path.basename(file).startswith('.')]
         random.shuffle(image_files)
 
         user_folders = {username: os.path.join(
@@ -29,6 +29,30 @@ def extract_and_distribute_images(zip_path, base_folder, usernames):
                     user_folders[username], image_name)
                 with open(destination_path, 'wb') as f:
                     f.write(zip_ref.read(selected_image))
+
+
+def extract_and_distribute_cover_images(zip_path, base_folder, book_ids):
+    if not os.path.exists(base_folder):
+        os.makedirs(base_folder)
+
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        image_files = [file for file in zip_ref.namelist(
+        ) if file.endswith(('.jpg', '.jpeg', '.png')) and not os.path.basename(file).startswith('.')]
+        random.shuffle(image_files)
+
+        book_folders = {book_id: os.path.join(
+            base_folder, book_id) for book_id in book_ids}
+        for folder in book_folders.values():
+            if not os.path.exists(folder):
+                os.makedirs(folder)
+
+        for book_id in book_ids:
+            selected_image = image_files.pop()
+            image_name = os.path.basename(selected_image)
+            destination_path = os.path.join(
+                book_folders[book_id], image_name)
+            with open(destination_path, 'wb') as f:
+                f.write(zip_ref.read(selected_image))
 
 
 def get_image_paths(folder_path):

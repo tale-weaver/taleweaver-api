@@ -8,13 +8,13 @@ from api.models.book import Book
 from api.models.page import Page
 from api.models.user import User
 from api.models.comment import Comment
-from api.utils.init_db_helpers import extract_and_distribute_images, get_image_paths, read_json_file, divide_list
+from api.utils.init_db_helpers import extract_and_distribute_images, extract_and_distribute_cover_images, get_image_paths, read_json_file, divide_list
 from api.utils.db import db
 from api.config.config import Config
 from api.utils.time import now, create_time_intervals, find_surrounding_datetime_indices
 
 
-def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", json_folder_path="./jsons"):
+def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", cover_zip_file_path="./covers.zip", json_folder_path="./jsons"):
 
     collections = db.list_collection_names()
 
@@ -125,5 +125,20 @@ def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", json_fo
             Page.update_created_at(
                 book.page_ids[j], book.interval_ids[j*2]["time_stamp"])
         print(f"Status and Created Time of Pages of Book {i+1} is updated...")
+
+    # finally let's assign cover images to books
+    books = Book.get_all()
+    books_ids = [str(book["_id"]) for book in books]
+    extract_and_distribute_cover_images(
+        cover_zip_file_path, image_base_folder, books_ids)
+    books_covers_paths = {book_id: get_image_paths(os.path.join(
+        image_base_folder, book_id))[0] for book_id in books_ids}
+
+    for book_id in books_ids:
+        cover_path = books_covers_paths[book_id]
+        cover_url = urljoin(Config.BACKEND_URL, cover_path)
+        Book.update_cover(book_id, cover_url)
+
+    print("Cover images of all books are updated...")
 
     print("All books created...")
