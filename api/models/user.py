@@ -17,10 +17,6 @@ class User:
                  verification_code='',
                  created_at=now(),
                  updated_at=now(),
-                 book_ids=[],
-                 comment_ids=[],
-                 liked_book_ids=[],
-                 saved_book_ids=[]
                  ):
         self.username = username
         self.password_hash = bcrypt.generate_password_hash(
@@ -33,10 +29,6 @@ class User:
         self.verification_code = verification_code
         self.created_at = created_at
         self.updated_at = updated_at
-        self.book_ids = book_ids
-        self.comment_ids = comment_ids
-        self.liked_book_ids = liked_book_ids
-        self.saved_book_ids = saved_book_ids
 
     def save(self):
         db.users.insert_one(self.__dict__)
@@ -67,4 +59,8 @@ class User:
         user.update(update_dict)
         db.users.update_one({'username': user['username']}, {
                             '$set': user})
-        
+
+    @staticmethod
+    def get_all():
+        users = db.users.find()
+        return users
