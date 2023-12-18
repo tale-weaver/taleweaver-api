@@ -3,7 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
-from api.resources.book import AllStory, SingleBook, LikeBook
+from api.resources.book import AllStory, SingleBook, LikeBook, TestFunction
 from api.resources.page import PageUploadConfirm, VotePage
 from api.resources.comment import AddComment
 from flask_mail import Mail
@@ -40,6 +40,7 @@ JWTManager(app)
 
 api = Api(app)
 
+api.add_resource(TestFunction, '/test/<book_id>')
 api.add_resource(StaticImage, '/data/<filename>')
 api.add_resource(AllStory, '/story')
 api.add_resource(PageUploadConfirm, '/story/upload/<book_id>')
@@ -110,7 +111,7 @@ def check_book_status():
     Book.update_current_interval_id(book["_id"])
     print("end check_book_status")
 
-scheduler.add_job(check_book_status, 'interval', seconds=5)
+# scheduler.add_job(check_book_status, 'interval', seconds=5)
 if __name__ == '__main__':
     with app.app_context():
         initialize_data()

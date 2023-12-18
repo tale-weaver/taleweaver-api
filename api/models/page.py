@@ -16,8 +16,6 @@ class Page:
         updated_at = now(),
         status='ongoing',
     ):
-        # if not all([image, description, book_id, interval_id, creator_id, created_at]):
-        #     raise ValueError("All fields are required")
         
         self.image = image
         self.description = description
@@ -33,8 +31,14 @@ class Page:
         db.pages.insert_one(self.__dict__)
 
     @staticmethod
-    def find_pages_by_bookid(book_id):
+    def find_pages_by_bookid(book_id, status):
         book_oid = ObjectId(book_id)
+        match_condition = {}
+        if status == 'finished':
+            return {}
+        if status == 'submitting' or 'voting':
+            match_condition = {"$match": {"pages.status": "ongoing" }}
+        
         pipeline = [
             {"$match": {"_id": book_oid}},
             {"$unwind": "$page_ids"},
@@ -47,18 +51,21 @@ class Page:
                 }
             },
             {"$unwind": "$pages"},
+            match_condition,
             {
                 "$project": {
-                    "_id": 0,
-                    "title": 1,
-                    "pages.image": 1,
-                    "pages.description": 1,
-                    "pages.creator_id": 1,
+                    "pages": "$pages",
                 }
             },
         ]
         result = db.books.aggregate(pipeline)
-        return result
+        # _id of result is book_id an ['pages'] is a list of pages
+        print('result:')
+        formatted_book = {}
+        for item in result:
+            formatted_book.update(item['pages'])
+        print(formatted_book)
+        return formatted_book
 
     def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)

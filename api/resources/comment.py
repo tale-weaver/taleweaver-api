@@ -12,13 +12,13 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 bcrypt = Bcrypt()
 
 class AddComment(Resource):
-    @jwt_required()
+    # @jwt_required()
     def post(self,book_id):
         data = request.get_json()
         content = data['content']
-        username = get_jwt_identity()
-        user = User.find_by_username(username, include_keys=["_id"])
-        commenter = user["_id"]
+        # username = get_jwt_identity()
+        # user = User.find_by_username(username, include_keys=["_id"])
+        # commenter = user["_id"]
         print(data)
         if not content:
             return {"msg": "Missing content"}, 400
@@ -35,11 +35,11 @@ class AddComment(Resource):
         newComment.save()
         book=Book.push_comment(book_id,newComment._id)
         print(book)
-        # print(len(book["comment_ids"]))
+        print(len(book["comment_ids"]))
         print(newComment._id)
-        # numComments=len(book["comment_ids"])
+        numComments=len(book["comment_ids"])
         
         return {
             "msg": "success",
-            "records": {"username": 0, "content": content, "created_at": newComment.created_at,"numComments":0},
+            "records": {"username": 0, "content": content, "created_at": newComment.created_at,"numComments":numComments},
         }, 200

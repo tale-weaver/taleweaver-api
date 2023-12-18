@@ -22,7 +22,6 @@ class AllStory(Resource):
         if not all_books:
             return {"msg": "No books"}, 400
         formatted_books = []
-        
 
         for book in all_books:
             bookurl = Page.find_cover_by_bookid(book["_id"])
@@ -40,7 +39,7 @@ class AllStory(Resource):
                 "numcomments": numcomments,
                 "state": book["status"],
                 # update!!!!
-                "time_intervals": time_intervals,
+                # "time_intervals": time_intervals,
                 # update!!!!
                 "date": book["created_at"],
             }
@@ -61,14 +60,14 @@ class SingleBook(Resource):
         numlikes = len(book["liked_by_user_ids"])
         numcomments = len(book["comment_ids"])
         state = book["status"]
-        pages = Page.find_pages_by_bookid(book_id)
+        pages = Page.find_pages_by_bookid(book_id, "winner")
         if state == "voting":
             pages_status = Page.find_voting_pages(book_id)
         elif state == "submitting":
             pages_status = Page.find_pages_by_bookid(book_id)
         elif state == "finished":
             pages_status = {}
-        comments= Comment.find_comment_of_book(book_id)
+        comments = Comment.find_comment_of_book(book_id)
         formatted_book = {
             "bookname": bookname,
             "numlikes": numlikes,
@@ -137,6 +136,13 @@ class CreateBook(Resource):
             "msg": "success",
             "records": {"bookname": bookname, "image": image_url, "page_num": page_num},
         }, 200
+
+
+class TestFunction(Resource):
+    def get(self, book_id):
+        book = Book.find_by_id(book_id)
+        pages = Page.find_pages_by_bookid(book_id, book["status"])
+        return {"msg": "success", "records": {"pages": pages}}, 200
 
 
 class SingleBook(Resource):
