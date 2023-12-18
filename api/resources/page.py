@@ -2,7 +2,7 @@ from flask import request
 from flask import current_app as app
 from flask_restful import Resource
 from werkzeug.utils import secure_filename
-from api.models.page import Page 
+from api.models.page import Page
 from api.models.book import Book
 from api.models.user import User
 from api.utils.time import now
@@ -60,22 +60,31 @@ class VotePage(Resource):
     @jwt_required()
     def post(self, page_id):
         username = get_jwt_identity()
-        # data = request.get_json()
-        # username = data["username"]
 
         if not username:
             return {"msg": "Missing username"}, 400
+
         user = User.find_by_username(username)
-        user_id = user["_id"]
 
-        user_voted = user["voted_book_ids"]
-        if page_id in user_voted:
-            return
-        else:
-            user_voted.append(page_id)
-        User.update(user, {"voted_book_ids": user_voted})
+        success = Page.voted_by_user(page_id, user["_id"])
+        if not success:
+            return {"msg": "You have already voted this page"}, 400
 
-        Page.voted_by_user(page_id, user_id)
-        page = Page.find_by_id(page_id)
-        num_votes = len(page['voted_by_user_ids'])
-        return {"msg": "success", "records": {"num_votes": num_votes}}, 200
+        return {"msg": "You vote this page successfully"}, 200
+
+
+class UnVotePage(Resource):
+    @jwt_required()
+    def post(self, page_id):
+        username = get_jwt_identity()
+
+        if not username:
+            return {"msg": "Missing username"}, 400
+
+        user = User.find_by_username(username)
+
+        success = Page.voted_by_user(page_id, user["_id"], unvote=True)
+        if not success:
+            return {"msg": "You have not voted this page"}, 400
+
+        return {"msg": "You unvote this page successfully"}, 200

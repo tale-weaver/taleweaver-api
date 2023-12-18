@@ -48,7 +48,7 @@ def _find_surrounding_datetime_indices(datetimes, current_datetime):
             return i, i + 1
 
 
-def find_surrounding_datetime_indices(datetime_strings, inspect_time=now()):
+def find_surrounding_datetime_indices(datetime_strings, inspect_time):
     try:
         datetimes = [datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
                      for dt_str in datetime_strings]

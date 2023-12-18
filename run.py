@@ -4,6 +4,8 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
+# from apscheduler.schedulers.background import BackgroundScheduler
+
 from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials
 from api.resources.book import AllStory, SingleBook, LikeBook, TestFunction
 from api.resources.page import PageUploadConfirm, VotePage
@@ -54,6 +56,9 @@ api.add_resource(LoginWithCredentials, '/user/login_with_credentials')
 api.add_resource(UserResource, '/user')
 api.add_resource(AddComment, '/story/<book_id>/comment')
 
+
+# scheduler = BackgroundScheduler()
+# scheduler.start()
 
 # find all submitting books ->
 # if book has less than 9 pages -> update book status to voting
