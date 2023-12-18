@@ -31,8 +31,14 @@ class Page:
         return db.pages.find()
 
     @staticmethod
-    def find_pages_by_bookid(book_id):
+    def find_pages_by_bookid(book_id, status):
         book_oid = ObjectId(book_id)
+        match_condition = {}
+        if status == 'finished':
+            return {}
+        if status == 'submitting' or 'voting':
+            match_condition = {"$match": {"pages.status": "ongoing"}}
+
         pipeline = [
             {"$match": {"_id": book_oid}},
             {"$unwind": "$page_ids"},
@@ -45,18 +51,21 @@ class Page:
                 }
             },
             {"$unwind": "$pages"},
+            match_condition,
             {
                 "$project": {
-                    "_id": 0,
-                    "title": 1,
-                    "pages.image": 1,
-                    "pages.description": 1,
-                    "pages.creator_id": 1,
+                    "pages": "$pages",
                 }
             },
         ]
         result = db.books.aggregate(pipeline)
-        return result
+        # _id of result is book_id an ['pages'] is a list of pages
+        print('result:')
+        formatted_book = {}
+        for item in result:
+            formatted_book.update(item['pages'])
+        print(formatted_book)
+        return formatted_book
 
     def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)
@@ -109,27 +118,24 @@ class Page:
 
     def find_voting_pages(book_id):
         book_oid = ObjectId(book_id)
-        book = Book.find_by_id(book_id, include_keys=["current_interval_id"])
+        book = Book.find_by_id(book_id)
         current_interval_id = book['current_interval_id']
-
+        interval_ids = book['interval_ids']
+        current_interval_index = interval_ids.index(current_interval_id)
+        num_pages = len(book['page_ids'])
+        if num_pages < 8:
+            interval_range = {
+                '$lt': interval_ids[current_interval_index-1], '$gte': current_interval_id}
+        else:
+            interval_range = {'$lt': current_interval_id}
         pipeline = [{
             '$match': {
                 '$and': [
                     {'book_id': book_oid},
-                    {'interval_id': current_interval_id},
+                    {'interval_id': interval_range},
                 ]
             }
         }]
-        # book_current_interval_oid = ObjectId(book_current_interval_id)
-        # pipeline = [{
-        #     '$match':{
-        #     '$and':[
-        #         {'book_id': book_oid},
-        #         {'interval_id': book_current_interval_oid},
-        #     ]
-        #     }
-        # }]
-
         pages = db.pages.aggregate(pipeline)
         return pages
 

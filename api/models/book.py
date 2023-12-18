@@ -1,5 +1,6 @@
 from api.utils.db import db
 from api.utils.time import now, create_time_intervals
+from api.models.user import User
 from bson import ObjectId
 
 
@@ -78,22 +79,19 @@ class Book:
         book = db.books.find_one({"_id": book_oid})
         return book
 
-    @staticmethod
-    def liked_by_user(book_id, user_id):
+    def liked_by_user(book_id, username):
         book_oid = ObjectId(book_id)
-        user_oid = ObjectId(user_id)
         book = db.books.find_one({"_id": book_oid})
-        if user_id in book['liked_by_user_ids']:
+        user = User.find_by_username(username)
+        user_id = user["_id"]
+        user_oid = ObjectId(user_id)
+        if user_oid in book['liked_by_user_ids']:
             db.books.update_one({"_id": book_oid}, {
-                                "$pull": {"liked_by_user_ids": user_id}})
-
-            # User.update()
-
+                                "$pull": {"liked_by_user_ids": user_oid}})
         else:
             db.books.update_one({"_id": book_oid}, {
-                                "$push": {"liked_by_user_ids": user_id}})
+                                "$push": {"liked_by_user_ids": user_oid}})
         book = db.books.find_one({"_id": book_oid})
-        # 還沒做 User 的 liked_book_ids 更新
         return book
 
     @staticmethod
@@ -113,4 +111,17 @@ class Book:
         db.users.update_one({"_id": user_oid}, {
                             "$push": {"comment_ids": comment_oid}})
         book = db.books.find_one({"_id": book_oid})
+        return book
+
+    def update_current_interval_id(book_id):
+        book_oid = ObjectId(book_id)
+        book = Book.find_by_id(book_oid)
+        current_interval_id = book['current_interval_id']
+        interval_ids = book['interval_ids']
+        if current_interval_id == interval_ids[-1]:
+            return
+        else:
+            db.books.update_one({"_id": book_oid}, {"$set": {
+                                "current_interval_id": interval_ids[interval_ids.index(current_interval_id) + 1]}})
+        book = Book.find_by_id(book_id)
         return book
