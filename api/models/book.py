@@ -153,7 +153,7 @@ class Book:
         user_oid = ObjectId(user_id)
         db.books.update_one({"_id": book_oid}, {
                             "$push": {"comment_ids": comment_oid}})
-        db.users.update_one({"_id": user_oid}, {
-                            "$push": {"comment_ids": comment_oid}})
+        # db.users.update_one({"_id": user_oid}, {
+        #                     "$push": {"comment_ids": comment_oid}})
         book = db.books.find_one({"_id": book_oid})
         return book
