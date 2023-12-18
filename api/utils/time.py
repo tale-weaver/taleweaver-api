@@ -33,10 +33,8 @@ def create_time_intervals(start_time, interval=Config.INTERVAL_TIME, num=8):
     return list_time
 
 
-def _find_surrounding_datetime_indices(datetimes):
+def _find_surrounding_datetime_indices(datetimes, current_datetime):
     datetimes.sort()
-
-    current_datetime = datetime.now()
 
     if current_datetime < datetimes[0]:
         raise ValueError(
@@ -50,11 +48,14 @@ def _find_surrounding_datetime_indices(datetimes):
             return i, i + 1
 
 
-def find_surrounding_datetime_indices(datetime_strings):
+def find_surrounding_datetime_indices(datetime_strings, inspect_time=now()):
     try:
         datetimes = [datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
                      for dt_str in datetime_strings]
-        surrounding_indices = _find_surrounding_datetime_indices(datetimes)
+        current_datetime = datetime.strptime(inspect_time, '%Y-%m-%d %H:%M:%S')
+
+        surrounding_indices = _find_surrounding_datetime_indices(
+            datetimes, current_datetime)
         return surrounding_indices
     except ValueError as e:
         print(e)

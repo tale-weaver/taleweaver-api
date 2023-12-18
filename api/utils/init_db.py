@@ -40,7 +40,7 @@ def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", json_fo
 
     # create users
     for user in users_data:
-        User(**user).save()
+        User(**user, is_verified=True).save()
     print("Users created...")
 
     # get users
