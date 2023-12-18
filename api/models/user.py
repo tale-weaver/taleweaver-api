@@ -67,3 +67,4 @@ class User:
         user.update(update_dict)
         db.users.update_one({'username': user['username']}, {
                             '$set': user})
+        

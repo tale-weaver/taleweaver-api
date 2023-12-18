@@ -212,8 +212,7 @@ def initialize_data():
         voting_page.save()
         Book.push_new_page(books[0]._id, voting_page._id)
     for comment in commentlist:
-        Book.push_comment(books[0]._id,comment._id)
+        Book.push_comment(books[0]._id,comment._id,comment.commenter_id)
     Book.liked_by_user(books[0]._id, userlist[0]._id)
     Book.liked_by_user(books[1]._id, userlist[2]._id)
-    books[0].save()
     print("Data initialized with 2 users 2 books and 20 pages!")

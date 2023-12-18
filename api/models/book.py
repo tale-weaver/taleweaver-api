@@ -90,10 +90,12 @@ class Book:
         book = db.books.find_one({"_id": book_oid})
         return book
 
-    def push_comment(book_id, comment_id):
+    def push_comment(book_id, comment_id, user_id):
         book_oid = ObjectId(book_id)
         comment_oid = ObjectId(comment_id)
+        user_oid = ObjectId(user_id)
         db.books.update_one({"_id": book_oid}, {"$push": {"comment_ids": comment_oid}})
+        db.users.update_one({"_id": user_oid},{"$push": {"comment_ids": comment_oid}})
         book = db.books.find_one({"_id": book_oid})
         return book
     
