@@ -13,7 +13,6 @@ from api.resources.comment import AddComment
 
 from api.utils.init_db import db_init
 from api.utils.json_encoder import MongoJSONEncoder
-from api.utils.time import now, find_surrounding_datetime_indices
 from api.utils.status_checker import check_book_status
 
 from api.models.page import Page
@@ -59,8 +58,13 @@ api.add_resource(AddComment, '/story/<book_id>/comment')
 
 scheduler = APScheduler()
 
+@scheduler.task('interval', id='my_task', seconds=5)
+def check_status():
+    check_book_status()
+
 if __name__ == '__main__':
+    # scheduler.start()
     with app.app_context():
         db_init()
     app.run()
-    scheduler.start()
+    

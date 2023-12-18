@@ -8,7 +8,6 @@ class Book:
     def __init__(
         self,
         title,
-        cover,
         description,
         cover="",
         page_ids=[],

@@ -140,29 +140,3 @@ class TestFunction(Resource):
         pages = Page.find_pages_by_bookid(book_id, book["status"])
         return {"msg": "success", "records": {"pages": pages}}, 200
 
-
-class SingleBook(Resource):
-    def get(self, book_id):
-        if book_id is None:
-            return {"msg": "Missing story fields"}, 400
-        book = Book.find_by_id(book_id)
-        if not book:
-            return {"msg": "No book"}, 400
-        bookname = book["bookname"]
-        page_num = len(book["page_ids"])
-        numlikes = len(book["liked_by_user_ids"])
-        numcomments = len(book["comment_ids"])
-        state = book["status"]
-        pages = Page.find_pages_by_bookid(book_id)
-        pages_voting = Page.find_voting_pages(book_id)
-        formatted_book = {
-            "bookname": bookname,
-            "numlikes": numlikes,
-            "numcomments": numcomments,
-            "state": state,
-            "pages": pages,
-            # 狀態下的頁面是否包含投票中？
-            "pages_voting": pages_voting,
-            "page_num": page_num,
-        }
-        return {"msg": "success", "records": formatted_book}, 200
