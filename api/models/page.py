@@ -137,21 +137,6 @@ class Page:
         return page
 
     @staticmethod
-<<<<<<< HEAD
-    def voted_by_user(page_id, user_id):
-        page_oid = ObjectId(page_id)
-        print('page_oid:')
-        print(page_oid)
-        user_oid = ObjectId(user_id)
-        print('user_oid:')
-        print(user_oid)
-        page = db.pages.find_one({"_id": page_oid})
-        if user_id in page['voted_by_user_ids']:
-            db.pages.update_one({"_id": page_oid}, {
-                                "$pull": {"voted_by_user_ids": user_id}})
-        else:
-            db.pages.update_one({"_id": page_oid}, {
-=======
     def voted_by_user(page_id, user_id, unvote=False) -> bool:
 
         if not isinstance(page_id, ObjectId):
@@ -166,7 +151,6 @@ class Page:
             if user_id in page['voted_by_user_ids']:
                 return False
             db.pages.update_one({"_id": page_id}, {
->>>>>>> main
                                 "$push": {"voted_by_user_ids": user_id}})
             return True
 

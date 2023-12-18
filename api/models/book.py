@@ -8,7 +8,7 @@ class Book:
     def __init__(
         self,
         title,
-        cover,
+        # cover,
         description,
         page_ids=[],
         comment_ids=[],
@@ -18,7 +18,7 @@ class Book:
         updated_at=now(),
     ):
         self.title = title
-        self.cover = cover
+        # self.cover = cover
         self.description = description
         self.page_ids = page_ids
         self.comment_ids = comment_ids
