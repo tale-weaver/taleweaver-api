@@ -26,18 +26,24 @@ def check_book_status():
         target_status = interval_ids[target_idx_pre]['status']
         target_round = interval_ids[target_idx_pre]['round']
         
-        # book information not equal to target status means it goes to next level            
-        if book["status"] == "voting" and target_status != book["status"]:
+        if book['status'] == 'voting' and target_status == "finished":
+            pages = Page.find_pages_by_bookid(book["_id"])
+
+            for page in pages:
+                Page.update_status(page["_id"], "loser")
             
-            # if no book got candidate?
+            update_dict = {"status": target_status, "round": target_round, "updated_at": now()}            
+            Book.update(book, update_dict)
+
+        # book information not equal to target status means it goes to next level            
+        elif book["status"] == "voting" and target_status != book["status"]:
 
             # print(book["status"])
             pages = Page.find_pages_by_bookid(book["_id"])
             max_vote = 0
+            
             for page in pages:
-                
                 page_id = page["page_id"]
-                Page.update_status(page_id, "loser")
                 target_vote = len(page["voted_by_user_ids"])
                 if target_vote >= max_vote:
                     max_vote = target_vote
