@@ -18,6 +18,7 @@ def check_book_status():
     for book in books:
 
         if book['status'] == "finished":
+            print(book["title"] + " is finished, no need to check")
             continue
 
         interval_ids = book["interval_ids"]
@@ -30,7 +31,9 @@ def check_book_status():
             pages = Page.find_pages_by_bookid(book["_id"])
 
             for page in pages:
-                Page.update_status(page["page_id"], "loser")
+                page_id = page["page_id"]
+                Page.update_status(page_id, "loser")
+                # print(loser_page['status'])
             
             update_dict = {"status": target_status, "round": target_round, "updated_at": now()}            
             Book.update(book, update_dict)
@@ -49,7 +52,10 @@ def check_book_status():
                     max_vote = target_vote
                     winner_page_id = page_id
 
-            Page.update_status(winner_page_id, "winner")
+            win_page = Page.find_by_id(winner_page_id)
+            win_page_id = win_page["_id"]
+            Page.update_status(win_page_id, "winner")
+            win_page = Page.find_by_id(winner_page_id)
             
             update_dict = {"status": target_status, "round": target_round, "updated_at": now()}            
             Book.update(book, update_dict)
