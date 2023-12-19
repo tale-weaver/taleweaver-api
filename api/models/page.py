@@ -9,9 +9,9 @@ class Page:
     def __init__(
         self,
         image,
-        title,
         description,
         creator_id,
+        title='',
         status="ongoing",
         voted_by_user_ids=[],
         created_at=now(),
