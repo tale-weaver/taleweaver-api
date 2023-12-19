@@ -68,5 +68,4 @@ class Comment:
                 "image": comment["comments"]["image"],
                 "created_at": comment["comments"]["created_at"]
             })
-        print(comment_list)
         return comment_list

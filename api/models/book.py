@@ -111,6 +111,7 @@ class Book:
         result = db.books.aggregate(pipeline)
         # _id of result is book_id an ['pages'] is a list of pages
         formatted_book = []
+
         for item in result:
             item["pages"]["_id"] = str(item["pages"]["_id"])
             item["pages"]["creator_id"] = str(item["pages"]["creator_id"])

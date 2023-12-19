@@ -165,3 +165,13 @@ class Page:
 
         db.pages.update_one({"_id": page_id}, {"$pull": {"voted_by_user_ids": user_id}})
         return True
+
+    @staticmethod
+    def find_pages_by_userid(user_id):
+
+        if not isinstance(user_id, ObjectId):
+            user_id = ObjectId(user_id)
+
+        pages = db.pages.find({"creator_id": user_id})
+
+        return pages
