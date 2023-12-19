@@ -44,6 +44,7 @@ class Page:
         match_condition = {}
         if status == "finished":
             return {}
+        
         if status == "submitting" or "voting":
             match_condition = {"$match": {"pages.status": "ongoing"}}
 
