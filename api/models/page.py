@@ -93,6 +93,11 @@ class Page:
         return formatted_book
 
     @staticmethod
+    def find_by_path(url):
+        page = db.pages.find_one({"image": url})
+        return page
+    
+    @staticmethod
     def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)
         if include_keys and exclude_keys:
