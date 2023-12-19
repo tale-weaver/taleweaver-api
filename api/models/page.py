@@ -2,6 +2,7 @@ from api.utils.time import now
 from api.utils.db import db
 from api.models.book import Book
 from bson import ObjectId
+import json
 
 
 class Page:
@@ -33,8 +34,7 @@ class Page:
     @staticmethod
     def update(page, update_dict):
         page.update(update_dict)
-        db.pages.update_one({'title': page['title']}, {
-                            '$set': page})
+        db.pages.update_one({"title": page["title"]}, {"$set": page})
 
     @staticmethod
     def find_pages_by_bookid(book_id):
@@ -93,45 +93,41 @@ class Page:
         if include_keys and exclude_keys:
             projection = {k: 1 for k in include_keys}
             projection.update({k: 0 for k in exclude_keys})
-            page = db.pages.find_one(
-                {'_id': page_oid}, projection)
+            page = db.pages.find_one({"_id": page_oid}, projection)
         elif include_keys:
             projection = {k: 1 for k in include_keys}
-            page = db.pages.find_one(
-                {'_id': page_oid}, projection)
+            page = db.pages.find_one({"_id": page_oid}, projection)
         elif exclude_keys:
             projection = {k: 0 for k in exclude_keys}
-            page = db.pages.find_one(
-                {'_id': page_oid}, projection)
+            page = db.pages.find_one({"_id": page_oid}, projection)
         else:
-            page = db.pages.find_one({'_id': page_oid})
+            page = db.pages.find_one({"_id": page_oid})
         return page
 
     @staticmethod
     def find_creator_by_id(page_id):
         page_oid = ObjectId(page_id)
         page = db.pages.find_one({"_id": page_oid})
-        print('page:')
+        print("page:")
         print(page)
-        creator_id = page['creator_id']
+        creator_id = page["creator_id"]
         creator_oid = ObjectId(creator_id)
-        creator = db.users.find_one({"_id": creator_oid})['username']
-        print('creator:')
+        creator = db.users.find_one({"_id": creator_oid})["username"]
+        print("creator:")
         print(creator)
         return creator
 
     @staticmethod
     def update_status(page_id, status):
-
         if isinstance(page_id, ObjectId):
             page_id = ObjectId(page_id)
 
         assert status in [
-            "winner", "loser"], "Status must be either 'winner' or 'loser'"
+            "winner",
+            "loser",
+        ], "Status must be either 'winner' or 'loser'"
 
-        page = db.pages.update_one(
-            {"_id": page_id}, {"$set": {"status": status}}
-        )
+        page = db.pages.update_one({"_id": page_id}, {"$set": {"status": status}})
 
         return page
 
@@ -142,15 +138,12 @@ class Page:
         if not isinstance(page_id, ObjectId):
             page_id = ObjectId(page_id)
 
-        page = db.pages.update_one(
-            {"_id": page_id}, {"$set": {"created_at": time}}
-        )
+        page = db.pages.update_one({"_id": page_id}, {"$set": {"created_at": time}})
 
         return page
 
     @staticmethod
     def voted_by_user(page_id, user_id, unvote=False) -> bool:
-
         if not isinstance(page_id, ObjectId):
             page_id = ObjectId(page_id)
 
@@ -160,17 +153,17 @@ class Page:
         page = db.pages.find_one({"_id": page_id})
 
         if not unvote:
-            if user_id in page['voted_by_user_ids']:
+            if user_id in page["voted_by_user_ids"]:
                 return False
-            db.pages.update_one({"_id": page_id}, {
-                                "$push": {"voted_by_user_ids": user_id}})
+            db.pages.update_one(
+                {"_id": page_id}, {"$push": {"voted_by_user_ids": user_id}}
+            )
             return True
 
-        if user_id not in page['voted_by_user_ids']:
+        if user_id not in page["voted_by_user_ids"]:
             return False
 
-        db.pages.update_one({"_id": page_id}, {
-                            "$pull": {"voted_by_user_ids": user_id}})
+        db.pages.update_one({"_id": page_id}, {"$pull": {"voted_by_user_ids": user_id}})
         return True
 
     @staticmethod

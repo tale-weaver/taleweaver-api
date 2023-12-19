@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from api.utils.time import now
+from api.models.user import User
 from bson import ObjectId
 
 import os
@@ -66,5 +67,5 @@ class Comment:
                 "commenter_id": str(comment["comments"]["commenter_id"]),
                 "image": comment["comments"]["image"],
                 "created_at": comment["comments"]["created_at"]
-            })        
+            })
         return comment_list

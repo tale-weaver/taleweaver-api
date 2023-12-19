@@ -64,6 +64,8 @@ def check_status():
     check_book_status()
 
 if __name__ == '__main__':
+
+    # scheduler.start()
     with app.app_context():
         db_init()
 
