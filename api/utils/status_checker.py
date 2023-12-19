@@ -28,6 +28,9 @@ def check_book_status():
 
         # book information not equal to target status means it goes to next level            
         if target_status == "voting" and target_status != book["status"]:
+            
+            # if no book got no candidate?
+
             pages = Page.find_pages_by_bookid(book["_id"])
             max_vote = 0
             for page in pages:
