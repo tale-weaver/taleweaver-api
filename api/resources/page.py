@@ -13,22 +13,28 @@ from api.config.config import Config
 
 
 class PageUploadConfirm(Resource):
-    @jwt_required()
+    # @jwt_required()
     def post(self, book_id):
         text_description = request.form.get("text_description")
-        # creator = request.form.get("creator")
-        creator = get_jwt_identity()
+        creator = request.form.get("creator")
+        # creator = get_jwt_identity()
 
         file = request.files.get("file")
         filename = secure_filename(file.filename)
         images_folder = os.path.join(app.root_path, "data", creator)
+
         if not file:
             return {"msg": "Missing file"}, 400
         if not creator:
             return {"msg": "Missing creator"}, 400
         if not text_description:
             return {"msg": "Missing text description"}, 400
+        
         filepath = os.path.join(images_folder, filename)
+        
+        if not os.path.exists(images_folder):
+            os.makedirs(images_folder)
+        
         file.save(filepath)
 
         image_url = os.path.join(Config.BACKEND_URL, filename)
@@ -38,7 +44,6 @@ class PageUploadConfirm(Resource):
             image=image_url,
             description=text_description,
             creator_id=creator_id,
-            book_id=book_id,
         )
         newPage.save()
         return {

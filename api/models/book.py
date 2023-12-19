@@ -47,7 +47,6 @@ class Book:
 
     @staticmethod
     def update_cover(book_id, cover_url):
-
         if not isinstance(book_id, ObjectId):
             book_id = ObjectId(book_id)
 
@@ -60,26 +59,23 @@ class Book:
         if include_keys and exclude_keys:
             projection = {k: 1 for k in include_keys}
             projection.update({k: 0 for k in exclude_keys})
-            book = db.books.find_one(
-                {'_id': book_oid}, projection)
+            book = db.books.find_one({"_id": book_oid}, projection)
         elif include_keys:
             projection = {k: 1 for k in include_keys}
-            book = db.books.find_one(
-                {'_id': book_oid}, projection)
+            book = db.books.find_one({"_id": book_oid}, projection)
         elif exclude_keys:
             projection = {k: 0 for k in exclude_keys}
-            book = db.books.find_one(
-                {'_id': book_oid}, projection)
+            book = db.books.find_one({"_id": book_oid}, projection)
         else:
-            book = db.books.find_one({'_id': book_oid})
+            book = db.books.find_one({"_id": book_oid})
 
         return book
 
     @staticmethod
     def update(book, update_dict):
         book.update(update_dict)
-        db.books.update_one({'title': book['title']}, {
-                            '$set': book})
+        db.books.update_one({"title": book["title"]}, {"$set": book})
+
     @staticmethod
     def find_all_books():
         book = db.books.find()
@@ -89,7 +85,7 @@ class Book:
     def find_books_by_status(status):
         book = db.books.find({"status": status})
         return book
-    
+
     @staticmethod
     def find_winner_pages(book_id):
         book_oid = ObjectId(book_id)
@@ -108,25 +104,36 @@ class Book:
             {"$unwind": "$pages"},
             {
                 "$project": {
-                    "pages": "$pages",
+                    "pages": "$pages"
                 }
             },
         ]
         result = db.books.aggregate(pipeline)
         # _id of result is book_id an ['pages'] is a list of pages
-        print('result:')
         formatted_book = []
+
         for item in result:
-            formatted_book.append(item['pages'])
-        print(formatted_book)
+            item["pages"]["_id"] = str(item["pages"]["_id"])
+            item["pages"]["creator_id"] = str(item["pages"]["creator_id"])
+            formatted_book.append(
+                {
+                    "page_id": item["pages"]["_id"],
+                    "pageurl": item["pages"]["image"],
+                    "pagename": item["pages"]["title"],
+                    "description": item["pages"]["description"],
+                    "creator_id": item["pages"]["creator_id"],
+                    "status": item["pages"]["status"],
+                    "voted_by_user_ids": item["pages"]["voted_by_user_ids"],
+                    "created_at": item["pages"]["created_at"],
+                }
+            )
         return formatted_book
 
     @staticmethod
     def push_new_page(book_id, page_id):
         book_oid = ObjectId(book_id)
         page_oid = ObjectId(page_id)
-        db.books.update_one({"_id": book_oid}, {
-                            "$push": {"page_ids": page_oid}})
+        db.books.update_one({"_id": book_oid}, {"$push": {"page_ids": page_oid}})
         book = db.books.find_one({"_id": book_oid})
         return book
 
@@ -137,12 +144,14 @@ class Book:
         user = User.find_by_username(username)
         user_id = user["_id"]
         user_oid = ObjectId(user_id)
-        if user_oid in book['liked_by_user_ids']:
-            db.books.update_one({"_id": book_oid}, {
-                                "$pull": {"liked_by_user_ids": user_oid}})
+        if user_oid in book["liked_by_user_ids"]:
+            db.books.update_one(
+                {"_id": book_oid}, {"$pull": {"liked_by_user_ids": user_oid}}
+            )
         else:
-            db.books.update_one({"_id": book_oid}, {
-                                "$push": {"liked_by_user_ids": user_oid}})
+            db.books.update_one(
+                {"_id": book_oid}, {"$push": {"liked_by_user_ids": user_oid}}
+            )
         book = db.books.find_one({"_id": book_oid})
         return book
 
@@ -153,7 +162,6 @@ class Book:
         user_oid = ObjectId(user_id)
         db.books.update_one({"_id": book_oid}, {
                             "$push": {"comment_ids": comment_oid}})
-        # db.users.update_one({"_id": user_oid}, {
-        #                     "$push": {"comment_ids": comment_oid}})
+        
         book = db.books.find_one({"_id": book_oid})
         return book

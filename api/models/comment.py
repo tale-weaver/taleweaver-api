@@ -1,7 +1,9 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from api.utils.time import now
+from api.models.user import User
 from bson import ObjectId
+from api.utils.db import db
 
 import os
 
@@ -37,26 +39,39 @@ class Comment:
     @staticmethod
     def find_comment_of_book(book_id):
         book_oid = ObjectId(book_id)
-        pipeline = [
-            {"$match": {"_id": book_oid}},
-            {"$unwind": "$comment_ids"},
-            {
-                "$lookup": {
-                    "from": "pages",
-                    "localField": "comment_ids",
-                    "foreignField": "_id",
-                    "as": "comments",
-                }
-            },
-            {"$unwind": "$comments"},
-            {
-                "$project": {
-                    "_id": 0,
-                    "comments.commenter_id": 1,
-                    "comments.image": 1,
-                    "comments.created_at": 1,
-                }
-            },
-        ]
-        result = db.books.aggregate(pipeline)
-        return result
+        book = db.books.find_one({"_id": book_oid})
+        result=[]
+        for comments in book["comment_ids"]:
+            oid=ObjectId(comments)
+            result.append(db.comments.find_one({"_id": oid}))
+        # pipeline = [
+        #     {"$match": {"_id": book_oid}},
+        #     {"$unwind": "$comment_ids"},
+        #     {
+        #         "$lookup": {
+        #             "from": "comment_ids",
+        #             "localField": "comment_ids",
+        #             "foreignField": "_id",
+        #             "as": "comments",
+        #         }
+        #     },
+        #     {"$unwind": "$comments"},
+        #     {
+        #         "$project": {
+        #             "comments" : "$comments"
+        #         }
+        #     },
+        # ]
+        # result = db.books.aggregate(pipeline)
+        comment_list = []
+        for comment in result:
+            user = db.users.find_one({"_id": ObjectId(comment["commenter_id"])})
+            comment_list.append({
+                "username": user['username'],
+                "avatar": user['avatar'],
+                "commenter_id": str(comment["commenter_id"]),
+                "review": comment["review"],
+                "rating": comment["rating"],
+                "created_at": comment["created_at"]
+            })
+        return comment_list

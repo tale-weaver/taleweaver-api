@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
+from flask_apscheduler import APScheduler
 
 from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials, Subscribe, MySubmittedPages
 from api.resources.book import AllStory, SingleBook, LikeBook, TestFunction
@@ -11,6 +12,7 @@ from api.resources.comment import AddComment
 
 from api.utils.init_db import db_init
 from api.utils.json_encoder import MongoJSONEncoder
+from api.utils.status_checker import check_book_status
 
 from api.config.config import Config
 
@@ -58,7 +60,14 @@ api.add_resource(AddComment, '/story/<book_id>/comment')
 api.add_resource(TestFunction, '/test/<book_id>')
 
 
+scheduler = APScheduler()
+@scheduler.task('interval', id='my_task', seconds=5)
+def check_status():
+    check_book_status()
+
 if __name__ == '__main__':
+
+    # scheduler.start()
     with app.app_context():
         db_init()
 
