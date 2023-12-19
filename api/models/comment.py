@@ -43,7 +43,7 @@ class Comment:
             {"$unwind": "$comment_ids"},
             {
                 "$lookup": {
-                    "from": "books",
+                    "from": "comment_ids",
                     "localField": "comment_ids",
                     "foreignField": "_id",
                     "as": "comments",
