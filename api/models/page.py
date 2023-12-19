@@ -45,7 +45,7 @@ class Page:
         if status == "finished":
             return []
         
-        if status == "submitting" or "voting":
+        if status == "submitting" or status == "voting":
             match_condition = {"$match": {"pages.status": "ongoing"}}
 
         pipeline = [

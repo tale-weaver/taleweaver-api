@@ -32,8 +32,10 @@ def check_book_status():
 
             for page in pages:
                 page_id = page["page_id"]
-                Page.update_status(page_id, "loser")
-                # print(loser_page['status'])
+                loser_page = Page.find_by_id(page_id)
+                loser_page_id = loser_page['_id']
+                Page.update_status(loser_page_id, "loser")
+                loser_page = Page.find_by_id(page_id)
             
             update_dict = {"status": target_status, "round": target_round, "updated_at": now()}            
             Book.update(book, update_dict)
@@ -54,8 +56,10 @@ def check_book_status():
 
             win_page = Page.find_by_id(winner_page_id)
             win_page_id = win_page["_id"]
+            print(win_page_id)
             Page.update_status(win_page_id, "winner")
             win_page = Page.find_by_id(winner_page_id)
+            print(win_page["status"])
             
             update_dict = {"status": target_status, "round": target_round, "updated_at": now()}            
             Book.update(book, update_dict)
