@@ -19,15 +19,14 @@ class AddComment(Resource):
         rating = data['rating']
         username = get_jwt_identity()
         user = User.find_by_username(username, include_keys=["_id"])
-        commenter = user["_id"]
+        commenter_id = user["_id"]
         print(data)
         if not rating:
             return {"msg": "Missing rating"}, 400
         if not review:
             return {"msg": "Missing review"}, 400
-        if not commenter:
+        if not commenter_id:
             return {"msg": "Missing commenter"}, 400
-        commenter_id = User.find_by_username(commenter)["_id"]
         newComment=Comment(
             commenter_id=commenter_id,
             review=review,
@@ -41,7 +40,7 @@ class AddComment(Resource):
         print(len(book["comment_ids"]))
         print(newComment._id)
         numComments=len(book["comment_ids"])
-        avatar = User.find_by_username(commenter)["avatar"]
+        avatar = User.find_by_username(username)["avatar"]
         return {
             "msg": "success",
             "records": {"username": username, "review": review,"rating": rating,"avatar": avatar, "created_at": newComment.created_at,"numComments":numComments},
