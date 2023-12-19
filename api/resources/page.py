@@ -46,7 +46,8 @@ class PageUploadConfirm(Resource):
             creator_id=creator_id,
         )
         newPage.save()
-        Book.push_new_page(book_id, newPage['_id'])
+        page = Page.find_by_path(image_url)
+        Book.push_new_page(book_id, page['_id'])
         return {
             "msg": "success",
         }, 200
