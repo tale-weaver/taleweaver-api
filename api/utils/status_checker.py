@@ -30,7 +30,7 @@ def check_book_status():
             pages = Page.find_pages_by_bookid(book["_id"])
 
             for page in pages:
-                Page.update_status(page["_id"], "loser")
+                Page.update_status(page["page_id"], "loser")
             
             update_dict = {"status": target_status, "round": target_round, "updated_at": now()}            
             Book.update(book, update_dict)
