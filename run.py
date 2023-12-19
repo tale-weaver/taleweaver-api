@@ -59,7 +59,7 @@ api.add_resource(TestFunction, '/test/<book_id>')
 
 
 scheduler = APScheduler()
-@scheduler.task('interval', id='my_task', seconds=5)
+@scheduler.task('interval', id='my_task', seconds=3)
 def check_status():
     check_book_status()
 
