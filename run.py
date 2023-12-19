@@ -67,8 +67,8 @@ def check_status():
 
 if __name__ == '__main__':
 
-    # scheduler.start()
+    
     with app.app_context():
         db_init()
-
+    # scheduler.start()
     app.run()
