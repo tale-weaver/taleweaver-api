@@ -28,7 +28,6 @@ class AddComment(Resource):
         if not commenter:
             return {"msg": "Missing commenter"}, 400
         commenter_id = User.find_by_username(commenter)["_id"]
-        commenter_id="123213"
         newComment=Comment(
             commenter_id=commenter_id,
             review=review,
@@ -42,8 +41,8 @@ class AddComment(Resource):
         print(len(book["comment_ids"]))
         print(newComment._id)
         numComments=len(book["comment_ids"])
-        
+        avatar = User.find_by_username(commenter)["avatar"]
         return {
             "msg": "success",
-            "records": {"username": 0, "content": content, "created_at": newComment.created_at,"numComments":numComments},
+            "records": {"username": username, "review": review,"rating": rating,"avatar": avatar, "created_at": newComment.created_at,"numComments":numComments},
         }, 200
