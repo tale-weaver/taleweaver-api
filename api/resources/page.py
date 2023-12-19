@@ -39,7 +39,7 @@ class PageUploadConfirm(Resource):
 
         image_url = os.path.join(Config.BACKEND_URL, filename)
 
-        creator_id = User.find_by_username(creator)["_id"]
+        creator_id = User.find_by_username(creator)["page_id"]
         newPage = Page(
             image=image_url,
             description=text_description,
