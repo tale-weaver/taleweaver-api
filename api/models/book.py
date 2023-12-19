@@ -106,21 +106,13 @@ class Book:
             {
                 "$project": {
                     "pages": "$pages"
-                    # {
-                    #     "title": "$pages.title",
-                    #     "image": "$pages.image",
-                    #     "description": "$pages.description",
-                    #     "creator_id": "$pages.creator_id",
-                    #     "status": "$pages.status",
-                    #     "voted_by_user_ids": "$pages.voted_by_user_ids",
-                    #     "created_at": "$pages.created_at",
-                    # },
                 }
             },
         ]
         result = db.books.aggregate(pipeline)
         # _id of result is book_id an ['pages'] is a list of pages
         formatted_book = []
+
         for item in result:
             item["pages"]["_id"] = str(item["pages"]["_id"])
             item["pages"]["creator_id"] = str(item["pages"]["creator_id"])
