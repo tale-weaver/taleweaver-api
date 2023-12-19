@@ -3,7 +3,7 @@ import shutil
 import random
 from urllib.parse import urljoin
 from bson import ObjectId
-
+from random import randint
 from api.models.book import Book
 from api.models.page import Page
 from api.models.user import User
@@ -103,7 +103,8 @@ def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", cover_z
         timestrs = [interval["time_stamp"] for interval in interval_ids]
         target_idx, _ = find_surrounding_datetime_indices(timestrs, now())
         target_stage = interval_ids[target_idx]
-
+        for num in range(i):
+            comments_ids_chunks[i].pop()
         book = Book(
             **books_data[i],
             page_ids=pages_ids_chunks[i],
@@ -112,7 +113,6 @@ def db_init(image_base_folder="./bin", img_zip_file_path="./images.zip", cover_z
             interval_ids=interval_ids,
             created_at=created_at,
         )
-
         book.status = target_stage['status']
         book.round = target_stage['round']
 
