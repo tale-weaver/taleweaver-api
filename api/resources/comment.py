@@ -25,6 +25,7 @@ class AddComment(Resource):
         if not commenter:
             return {"msg": "Missing commenter"}, 400
         commenter_id = User.find_by_username(commenter)["_id"]
+        commenter_id="123213"
         newComment=Comment(
             commenter_id=commenter_id,
             content=content,

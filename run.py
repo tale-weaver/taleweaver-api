@@ -5,7 +5,6 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_apscheduler import APScheduler
 
-
 from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials
 from api.resources.book import AllStory, SingleBook, LikeBook, TestFunction
 from api.resources.page import PageUploadConfirm, VotePage
@@ -14,9 +13,6 @@ from api.resources.comment import AddComment
 from api.utils.init_db import db_init
 from api.utils.json_encoder import MongoJSONEncoder
 from api.utils.status_checker import check_book_status
-
-from api.models.page import Page
-from api.models.book import Book
 
 from api.config.config import Config
 
@@ -64,7 +60,6 @@ def check_status():
 
 if __name__ == '__main__':
     # scheduler.start()
-    # with app.app_context():
-        # db_init()
+    with app.app_context():
+        db_init()
     app.run()
-    

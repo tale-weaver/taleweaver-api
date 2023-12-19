@@ -2,7 +2,6 @@ from api.utils.db import db
 from api.utils.time import now, create_time_intervals
 from api.models.user import User
 from bson import ObjectId
-import json
 
 
 class Book:
@@ -106,15 +105,6 @@ class Book:
             {
                 "$project": {
                     "pages": "$pages"
-                    # {
-                    #     "title": "$pages.title",
-                    #     "image": "$pages.image",
-                    #     "description": "$pages.description",
-                    #     "creator_id": "$pages.creator_id",
-                    #     "status": "$pages.status",
-                    #     "voted_by_user_ids": "$pages.voted_by_user_ids",
-                    #     "created_at": "$pages.created_at",
-                    # },
                 }
             },
         ]
@@ -136,7 +126,6 @@ class Book:
                     "created_at": item["pages"]["created_at"],
                 }
             )
-
         return formatted_book
 
     @staticmethod
@@ -170,7 +159,8 @@ class Book:
         book_oid = ObjectId(book_id)
         comment_oid = ObjectId(comment_id)
         user_oid = ObjectId(user_id)
-        db.books.update_one({"_id": book_oid}, {"$push": {"comment_ids": comment_oid}})
-        db.users.update_one({"_id": user_oid}, {"$push": {"comment_ids": comment_oid}})
+        db.books.update_one({"_id": book_oid}, {
+                            "$push": {"comment_ids": comment_oid}})
+        
         book = db.books.find_one({"_id": book_oid})
         return book
