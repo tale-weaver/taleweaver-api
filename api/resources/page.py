@@ -46,6 +46,7 @@ class PageUploadConfirm(Resource):
             creator_id=creator_id,
         )
         newPage.save()
+        Book.push_new_page(book_id, newPage['_id'])
         return {
             "msg": "success",
         }, 200
@@ -53,11 +54,11 @@ class PageUploadConfirm(Resource):
     def get(self, book_id):
         book = Book.find_by_id(book_id)
         bookname = book["title"]
-        page_num = len(book["page_ids"]) + 1
-
+        winner_page_num = len(Book.find_winner_pages(book_id))
+        
         return {
             "msg": "success",
-            "records": {"bookname": bookname, "page_num": page_num},
+            "records": {"bookname": bookname, "page_num": winner_page_num+1},
         }, 200
 
 

@@ -74,6 +74,9 @@ class Page:
         for item in result:
             item["pages"]["_id"] = str(item["pages"]["_id"])
             item["pages"]["creator_id"] = str(item["pages"]["creator_id"])
+            creator_oid = ObjectId(item["pages"]["creator_id"])
+            creator = db.users.find_one({"_id": creator_oid})
+
             formatted_book.append(
                 {
                     "page_id": item["pages"]["_id"],
@@ -81,6 +84,7 @@ class Page:
                     "pagename": item["pages"]["title"],
                     "description": item["pages"]["description"],
                     "creator_id": item["pages"]["creator_id"],
+                    "creator": creator['username'],
                     "status": item["pages"]["status"],
                     "voted_by_user_ids": item["pages"]["voted_by_user_ids"],
                     "created_at": item["pages"]["created_at"],
