@@ -4,7 +4,7 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
-from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials
+from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials, Subscribe, MySubmittedPages
 from api.resources.book import AllStory, SingleBook, LikeBook, TestFunction
 from api.resources.page import PageUploadConfirm, VotePage
 from api.resources.comment import AddComment
@@ -43,6 +43,8 @@ api.add_resource(ResendVerificationEmail, '/user/resend_verification_email')
 api.add_resource(VerifyEmail, '/user/verify')
 api.add_resource(LoginWithCredentials, '/user/login_with_credentials')
 api.add_resource(UserResource, '/user')
+api.add_resource(Subscribe, '/user/subscribe')
+api.add_resource(MySubmittedPages, '/user/my_submitted_pages')
 
 # story / book related apis
 api.add_resource(AllStory, '/story')
