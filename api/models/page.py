@@ -43,7 +43,7 @@ class Page:
         status = book["status"]
         match_condition = {}
         if status == "finished":
-            return {}
+            return []
         
         if status == "submitting" or "voting":
             match_condition = {"$match": {"pages.status": "ongoing"}}
