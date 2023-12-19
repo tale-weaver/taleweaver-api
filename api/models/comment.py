@@ -42,7 +42,7 @@ class Comment:
             {"$unwind": "$comment_ids"},
             {
                 "$lookup": {
-                    "from": "pages",
+                    "from": "books",
                     "localField": "comment_ids",
                     "foreignField": "_id",
                     "as": "comments",
@@ -51,12 +51,20 @@ class Comment:
             {"$unwind": "$comments"},
             {
                 "$project": {
-                    "_id": 0,
-                    "comments.commenter_id": 1,
-                    "comments.image": 1,
-                    "comments.created_at": 1,
+                    "comments" : "$comments"
                 }
             },
         ]
         result = db.books.aggregate(pipeline)
-        return result
+        comment_list = []
+        for comment in result:
+            print(comment)
+            user = db.users.find_one({"_id": ObjectId(comment["comments"]["commenter_id"])})
+            comment_list.append({
+                "username": user['username'],
+                "avatar": user['avatar'],
+                "commenter_id": str(comment["comments"]["commenter_id"]),
+                "image": comment["comments"]["image"],
+                "created_at": comment["comments"]["created_at"]
+            })        
+        return comment_list

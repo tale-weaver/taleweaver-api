@@ -108,17 +108,31 @@ class Book:
             {"$unwind": "$pages"},
             {
                 "$project": {
-                    "pages": "$pages",
+                    "pages": "$pages"
                 }
             },
         ]
         result = db.books.aggregate(pipeline)
         # _id of result is book_id an ['pages'] is a list of pages
-        print('result:')
         formatted_book = []
+
         for item in result:
-            formatted_book.append(item['pages'])
-        print(formatted_book)
+            item["pages"]["_id"] = str(item["pages"]["_id"])
+            item["pages"]["creator_id"] = str(item["pages"]["creator_id"])
+            
+            formatted_book.append(
+                {
+                    "page_id": item["pages"]["_id"],
+                    "pageurl": item["pages"]["image"],
+                    "pagename": item["pages"]["title"],
+                    "description": item["pages"]["description"],
+                    "creator_id": item["pages"]["creator_id"],
+                    "status": item["pages"]["status"],
+                    "voted_by_user_ids": item["pages"]["voted_by_user_ids"],
+                    "created_at": item["pages"]["created_at"],
+                }
+            )
+
         return formatted_book
 
     @staticmethod

@@ -69,7 +69,7 @@ class SingleBook(Resource):
             "numlikes": num_likes,
             "numcomments": num_comments,
             "state": status,
-            "pages": {"winner": pages_winner, "ongoning": pages_status},
+            "pages": {"winner": pages_winner, "ongoing": pages_status},
             "time_intervals": book["interval_ids"],
             "comments": comments,
         }
