@@ -61,7 +61,7 @@ class SingleBook(Resource):
         if status == "voting" or "submitting":
             pages_status = Page.find_pages_by_bookid(book_id)
         elif status == "finished":
-            pages_status = {}
+            pages_status = []
         comments = Comment.find_comment_of_book(book_id)
         formatted_book = {
             "bookurl": book["cover"],
