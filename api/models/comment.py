@@ -61,7 +61,7 @@ class Comment:
         comment_list = []
         for comment in result:
             print(comment)
-            # user = db.users.find_one({"_id": ObjectId(comment["comments"]["commenter_id"])})
+            user = db.users.find_one({"_id": ObjectId(comment["comments"]["commenter_id"])})
             comment_list.append({
                 "username": user['username'],
                 "avatar": user['avatar'],
