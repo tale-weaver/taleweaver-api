@@ -89,7 +89,6 @@ class Book:
     @staticmethod
     def find_winner_pages(book_id):
         book_oid = ObjectId(book_id)
-        book = Book.find_by_id(book_id)
         pipeline = [
             {"$match": {"_id": book_oid}},
             {"$unwind": "$page_ids"},
@@ -102,11 +101,13 @@ class Book:
                 }
             },
             {"$unwind": "$pages"},
+            {"$match": {"pages.status": "winner"}},
             {
                 "$project": {
                     "pages": "$pages"
                 }
             },
+            
         ]
         result = db.books.aggregate(pipeline)
         # _id of result is book_id an ['pages'] is a list of pages

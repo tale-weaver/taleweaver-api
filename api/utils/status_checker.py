@@ -22,16 +22,16 @@ def check_book_status():
         next_status = interval_ids[target_idx_post]['status']
         target_round = book['round']
         next_round = interval_ids[target_idx_post]['round']
+        
         if target_status == "finished":
             continue
-        
 
         # book information not equal to target status means it goes to next level            
         if target_status == "voting" and target_status != book["status"]:
             pages = Page.find_pages_by_bookid(book["_id"])
-
+            max_vote = 0
             for page in pages:
-                max_vote = 0
+                
                 Page.update_status(page, "loser")
                 if len(page["voted_by_user_ids"]) >= max_vote:
                     max_vote = len(page["voted_by_user_ids"])
@@ -44,12 +44,11 @@ def check_book_status():
             winner_pages.append(winner_page_id)      
             update_dict = {"page_ids": winner_pages, "status": next_status, "round": next_round}
             Book.update(book, update_dict)
-            
-            print(book["title"] + "update to "+ book["status"]+ "supposed to be "+ next_status)
 
         elif target_status == "submitting" and target_status != book["status"]:
             update_dict = {"status": next_status, "round": next_round}
             Book.update(book, update_dict)
             
-            print(book["title"] + "update to "+ book["status"]+ "supposed to be "+ next_status)
+        print(book["title"] + "update to "+ book["status"]+ "supposed to be "+ next_status)
+
     print("end check_book_status")

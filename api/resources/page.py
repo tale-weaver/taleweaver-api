@@ -13,11 +13,11 @@ from api.config.config import Config
 
 
 class PageUploadConfirm(Resource):
-    # @jwt_required()
+    @jwt_required()
     def post(self, book_id):
         text_description = request.form.get("text_description")
-        creator = request.form.get("creator")
-        # creator = get_jwt_identity()
+        # creator = request.form.get("creator")
+        creator = get_jwt_identity()
 
         file = request.files.get("file")
         filename = secure_filename(file.filename)
