@@ -15,20 +15,24 @@ class AddComment(Resource):
     @jwt_required()
     def post(self,book_id):
         data = request.get_json()
-        content = data['content']
+        review = data['review']
+        rating = data['rating']
         username = get_jwt_identity()
         user = User.find_by_username(username, include_keys=["_id"])
         commenter = user["_id"]
         print(data)
-        if not content:
-            return {"msg": "Missing content"}, 400
+        if not rating:
+            return {"msg": "Missing rating"}, 400
+        if not review:
+            return {"msg": "Missing review"}, 400
         if not commenter:
             return {"msg": "Missing commenter"}, 400
         commenter_id = User.find_by_username(commenter)["_id"]
         commenter_id="123213"
         newComment=Comment(
             commenter_id=commenter_id,
-            content=content,
+            review=review,
+            rating=rating,
             created_at=now(),
             updated_at=now(),
         )
