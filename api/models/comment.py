@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from api.utils.time import now
 from api.models.user import User
 from bson import ObjectId
+from api.utils.db import db
 
 import os
 
@@ -60,7 +61,7 @@ class Comment:
         comment_list = []
         for comment in result:
             print(comment)
-            user = db.users.find_one({"_id": ObjectId(comment["comments"]["commenter_id"])})
+            # user = db.users.find_one({"_id": ObjectId(comment["comments"]["commenter_id"])})
             comment_list.append({
                 "username": user['username'],
                 "avatar": user['avatar'],
