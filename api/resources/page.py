@@ -39,7 +39,7 @@ class PageUploadConfirm(Resource):
 
         image_url = os.path.join(Config.BACKEND_URL, filename)
 
-        creator_id = User.find_by_username(creator)["page_id"]
+        creator_id = User.find_by_username(creator)["_id"]
         newPage = Page(
             image=image_url,
             description=text_description,
@@ -47,7 +47,8 @@ class PageUploadConfirm(Resource):
         )
         newPage.save()
         page = Page.find_by_path(image_url)
-        Book.push_new_page(book_id, page['_id'])
+        page_id = page["_id"]
+        Book.push_new_page(book_id, page_id)
         return {
             "msg": "success",
         }, 200
