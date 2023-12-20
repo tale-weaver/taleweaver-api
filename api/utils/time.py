@@ -1,5 +1,8 @@
 from datetime import datetime, timedelta
 from api.config.config import Config
+import random
+
+random.seed(int(datetime.now().timestamp()))
 
 
 def now(seconds=0):
@@ -59,3 +62,12 @@ def find_surrounding_datetime_indices(datetime_strings, inspect_time):
         return surrounding_indices
     except ValueError as e:
         print(e)
+
+
+def generate_random_time_between_two_times(start_time, end_time):
+    start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
+    end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+
+    random_time = start_time + timedelta(seconds=random.randint(
+        0, int((end_time - start_time).total_seconds())))
+    return random_time.strftime('%Y-%m-%d %H:%M:%S')

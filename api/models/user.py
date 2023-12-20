@@ -16,7 +16,6 @@ class User:
                  is_verified=False,
                  verification_code='',
                  created_at=now(),
-                 updated_at=now(),
                  ):
         self.username = username
         self.password_hash = bcrypt.generate_password_hash(
@@ -28,7 +27,6 @@ class User:
         self.is_verified = is_verified
         self.verification_code = verification_code
         self.created_at = created_at
-        self.updated_at = updated_at
 
     def save(self):
         db.users.insert_one(self.__dict__)
@@ -64,3 +62,27 @@ class User:
     def get_all():
         users = db.users.find()
         return users
+
+    @staticmethod
+    def get_profile_data(username):
+
+        # get user
+        user = db.users.find_one({'username': username})
+
+        # using user _id to get all pages they created
+        pages = db.pages.find({'creator_id': user['_id']})
+
+        # using user _id to get all books they liked
+        books = db.books.find({"liked_by_user_ids": {"$in": [user['_id']]}})
+
+        # using user _id to get all comments they made
+        comments = db.comments.find({'commenter_id': user['_id']})
+
+        profile_data = {
+            'user': user,
+            'pages': list(pages),
+            'books': list(books),
+            'comments': list(comments)
+        }
+
+        return profile_data

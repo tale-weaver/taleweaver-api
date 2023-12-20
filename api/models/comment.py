@@ -21,13 +21,11 @@ class Comment:
         review,
         rating,
         created_at=now(),
-        updated_at=now(),
     ):
         self.commenter_id = commenter_id
         self.review = review
         self.rating = rating
         self.created_at = created_at
-        self.updated_at = updated_at
 
     def save(self):
         db.comments.insert_one(self.__dict__)
@@ -40,9 +38,9 @@ class Comment:
     def find_comment_of_book(book_id):
         book_oid = ObjectId(book_id)
         book = db.books.find_one({"_id": book_oid})
-        result=[]
+        result = []
         for comments in book["comment_ids"]:
-            oid=ObjectId(comments)
+            oid = ObjectId(comments)
             result.append(db.comments.find_one({"_id": oid}))
         # pipeline = [
         #     {"$match": {"_id": book_oid}},
@@ -65,7 +63,8 @@ class Comment:
         # result = db.books.aggregate(pipeline)
         comment_list = []
         for comment in result:
-            user = db.users.find_one({"_id": ObjectId(comment["commenter_id"])})
+            user = db.users.find_one(
+                {"_id": ObjectId(comment["commenter_id"])})
             comment_list.append({
                 "username": user['username'],
                 "avatar": user['avatar'],
@@ -75,3 +74,12 @@ class Comment:
                 "created_at": comment["created_at"]
             })
         return comment_list
+
+    @staticmethod
+    def update_created_at(comment_id, created_at):
+        # ONLY USE IN INIT
+        if not isinstance(comment_id, ObjectId):
+            comment_id = ObjectId(comment_id)
+
+        db.comments.update_one({"_id": comment_id}, {
+                               "$set": {"created_at": created_at}})

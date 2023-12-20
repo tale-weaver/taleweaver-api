@@ -5,7 +5,6 @@ from flask_mail import Message, Mail
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from api.models.user import User
-from api.models.page import Page
 
 from api.utils.templates import verification_email
 from api.utils.time import now
@@ -167,7 +166,7 @@ class Subscribe(Resource):
         return {'message': 'User subscribed successfully'}, 200
 
 
-class MySubmittedPages(Resource):
+class ProfileData(Resource):
     @jwt_required()
     def get(self):
         current_user = get_jwt_identity()
@@ -176,9 +175,6 @@ class MySubmittedPages(Resource):
         if not user:
             return {'message': 'User not found'}, 404
 
-        pages = Page.find_pages_by_userid(user['_id'])
+        profile = User.get_profile_data(current_user)
 
-        if not pages:
-            return {'message': 'Pages not found'}, 404
-
-        return {'message': 'Pages found', 'records': pages}, 200
+        return {'message': 'User profile found', 'record': profile}, 200
