@@ -48,8 +48,12 @@ class AllStory(Resource):
 
 
 class SingleBook(Resource):
+    @jwt_required()
     def get(self, book_id):
-
+        username = get_jwt_identity()
+        user = User.find_by_username(username)
+        user_id = user["_id"]
+        
         if book_id is None:
             return {"msg": "Missing book_id"}, 400
 
@@ -58,6 +62,11 @@ class SingleBook(Resource):
         if not book:
             return {"msg": "No book found"}, 400
 
+        liked = False
+
+        if user_id in book['liked_by_user_ids']:
+            liked = True
+            
         # update book status if needed
         check_book_status()
 
@@ -65,7 +74,7 @@ class SingleBook(Resource):
         num_comments = len(book["comment_ids"])
 
         status = book["status"]
-
+        
         pages_winner = Book.find_winner_pages(book_id)
         if status == "voting" or "submitting":
             pages_status = Page.find_pages_by_bookid(book_id)
@@ -77,6 +86,7 @@ class SingleBook(Resource):
             "bookname": book["title"],
             "numlikes": num_likes,
             "numcomments": num_comments,
+            "liked": liked,
             "state": status,
             "pages": {"winner": pages_winner, "ongoing": pages_status},
             "time_intervals": book["interval_ids"],
