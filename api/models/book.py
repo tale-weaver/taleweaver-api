@@ -133,11 +133,16 @@ class Book:
 
     @staticmethod
     def push_new_page(book_id, page_id):
-        book_oid = ObjectId(book_id)
-        page_oid = ObjectId(page_id)
-        db.books.update_one({"_id": book_oid}, {
-                            "$push": {"page_ids": page_oid}})
-        book = db.books.find_one({"_id": book_oid})
+
+        if not isinstance(book_id, ObjectId):
+            book_id = ObjectId(book_id)
+
+        if not isinstance(page_id, ObjectId):
+            page_id = ObjectId(page_id)
+
+        db.books.update_one({"_id": book_id}, {
+                            "$push": {"page_ids": page_id}})
+        book = db.books.find_one({"_id": book_id})
         return book
 
     @staticmethod

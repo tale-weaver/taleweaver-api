@@ -7,6 +7,7 @@ from api.models.user import User
 from api.models.comment import Comment
 from werkzeug.utils import secure_filename
 from api.utils.time import now
+from api.utils.status_checker import check_book_status
 from bson import ObjectId
 import os
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -56,6 +57,9 @@ class SingleBook(Resource):
 
         if not book:
             return {"msg": "No book found"}, 400
+
+        # update book status if needed
+        check_book_status()
 
         num_likes = len(book["liked_by_user_ids"])
         num_comments = len(book["comment_ids"])

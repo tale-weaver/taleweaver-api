@@ -11,7 +11,7 @@ class Page:
         image,
         description,
         creator_id,
-        title='',
+        title='A Lovely Page',
         status="ongoing",
         voted_by_user_ids=[],
         created_at=now(),
@@ -44,7 +44,7 @@ class Page:
         match_condition = {}
         if status == "finished":
             return []
-        
+
         if status == "submitting" or status == "voting":
             match_condition = {"$match": {"pages.status": "ongoing"}}
 
@@ -96,7 +96,7 @@ class Page:
     def find_by_path(url):
         page = db.pages.find_one({"image": url})
         return page
-    
+
     @staticmethod
     def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)
@@ -137,7 +137,8 @@ class Page:
             "loser",
         ], "Status must be either 'winner' or 'loser'"
 
-        page = db.pages.update_one({"_id": page_id}, {"$set": {"status": status}})
+        page = db.pages.update_one(
+            {"_id": page_id}, {"$set": {"status": status}})
 
         return page
 
@@ -148,7 +149,8 @@ class Page:
         if not isinstance(page_id, ObjectId):
             page_id = ObjectId(page_id)
 
-        page = db.pages.update_one({"_id": page_id}, {"$set": {"created_at": time}})
+        page = db.pages.update_one(
+            {"_id": page_id}, {"$set": {"created_at": time}})
 
         return page
 
@@ -173,7 +175,8 @@ class Page:
         if user_id not in page["voted_by_user_ids"]:
             return False
 
-        db.pages.update_one({"_id": page_id}, {"$pull": {"voted_by_user_ids": user_id}})
+        db.pages.update_one({"_id": page_id}, {
+                            "$pull": {"voted_by_user_ids": user_id}})
         return True
 
     @staticmethod
