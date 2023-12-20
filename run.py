@@ -62,9 +62,13 @@ api.add_resource(TestFunction, '/test/<book_id>')
 
 
 scheduler = APScheduler()
+<<<<<<< HEAD
 
 
 @scheduler.task('interval', id='my_task', seconds=5)
+=======
+@scheduler.task('interval', id='my_task', seconds=3)
+>>>>>>> main
 def check_status():
     check_book_status()
 
@@ -73,5 +77,5 @@ if __name__ == '__main__':
 
     with app.app_context():
         db_init()
-    # scheduler.start()
+    scheduler.start()
     app.run()

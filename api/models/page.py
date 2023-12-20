@@ -43,9 +43,9 @@ class Page:
         status = book["status"]
         match_condition = {}
         if status == "finished":
-            return {}
+            return []
         
-        if status == "submitting" or "voting":
+        if status == "submitting" or status == "voting":
             match_condition = {"$match": {"pages.status": "ongoing"}}
 
         pipeline = [
@@ -92,6 +92,11 @@ class Page:
             )
         return formatted_book
 
+    @staticmethod
+    def find_by_path(url):
+        page = db.pages.find_one({"image": url})
+        return page
+    
     @staticmethod
     def find_by_id(page_id, include_keys=[], exclude_keys=[]):
         page_oid = ObjectId(page_id)
