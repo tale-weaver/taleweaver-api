@@ -4,16 +4,15 @@ from api.models.user import User
 from api.models.book import Book
 from api.models.comment import Comment
 from flask_bcrypt import Bcrypt
-from api.utils.time import now
-import random
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 bcrypt = Bcrypt()
 
+
 class AddComment(Resource):
     @jwt_required()
-    def post(self,book_id):
+    def post(self, book_id):
         data = request.get_json()
         review = data['review']
         rating = data['rating']
@@ -27,21 +26,19 @@ class AddComment(Resource):
             return {"msg": "Missing review"}, 400
         if not commenter_id:
             return {"msg": "Missing commenter"}, 400
-        newComment=Comment(
+        newComment = Comment(
             commenter_id=commenter_id,
             review=review,
             rating=rating,
-            created_at=now(),
-            updated_at=now(),
         )
         newComment.save()
-        book=Book.push_comment(book_id,newComment._id,commenter_id)
-        print(book)
-        print(len(book["comment_ids"]))
-        print(newComment._id)
-        numComments=len(book["comment_ids"])
+        book = Book.push_comment(book_id, newComment._id, commenter_id)
+        # print(book)
+        # print(len(book["comment_ids"]))
+        # print(newComment._id)
+        numComments = len(book["comment_ids"])
         avatar = User.find_by_username(username)["avatar"]
         return {
             "msg": "success",
-            "records": {"username": username, "review": review,"rating": rating,"avatar": avatar, "created_at": newComment.created_at,"numComments":numComments},
+            "records": {"username": username, "review": review, "rating": rating, "avatar": avatar, "created_at": newComment.created_at, "numComments": numComments},
         }, 200
