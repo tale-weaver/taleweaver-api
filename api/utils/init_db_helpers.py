@@ -90,3 +90,27 @@ def divide_list(lst, n, shuffle=True):
         start = end
 
     return chunks
+
+
+def divide_list_diverse_chunks(lst, n, base_num, shuffle=True):
+    if shuffle:
+        random.shuffle(lst)
+
+    total_len = len(lst)
+
+    if total_len < n * base_num:
+        raise ValueError(
+            "List is too short to divide into chunks with the specified base number")
+
+    max_length_for_random = total_len - n * base_num
+
+    chunk_lengths = random.sample(range(1, max_length_for_random + 1), n - 1)
+    chunk_lengths.append(0)
+    chunk_lengths.append(max_length_for_random)
+    chunk_lengths.sort()
+
+    chunk_lengths = [x + i * base_num for i, x in enumerate(chunk_lengths)]
+
+    chunks = [lst[chunk_lengths[i]:chunk_lengths[i+1]] for i in range(n)]
+
+    return chunks

@@ -11,7 +11,7 @@ class Config:
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     BACKEND_URL = "http://127.0.0.1:5000"
-    INTERVAL_TIME = 10
+    INTERVAL_TIME = 300
     STATIC_FOLDER = 'bin'
 
     print(f"The BACKEND_URL is {BACKEND_URL}")

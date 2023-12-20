@@ -5,12 +5,13 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_apscheduler import APScheduler
 
-from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials
+from api.resources.user import Signup, ResendVerificationEmail, VerifyEmail, UserResource, LoginWithCredentials, Subscribe, ProfileData
 from api.resources.book import AllStory, SingleBook, LikeBook, TestFunction
 from api.resources.page import PageUploadConfirm, VotePage
 from api.resources.comment import AddComment
 
-from api.utils.init_db import db_init
+# from api.utils.init_db import db_init
+from api.utils._init_db import db_init
 from api.utils.json_encoder import MongoJSONEncoder
 from api.utils.status_checker import check_book_status
 
@@ -45,6 +46,8 @@ api.add_resource(ResendVerificationEmail, '/user/resend_verification_email')
 api.add_resource(VerifyEmail, '/user/verify')
 api.add_resource(LoginWithCredentials, '/user/login_with_credentials')
 api.add_resource(UserResource, '/user')
+api.add_resource(Subscribe, '/user/subscribe')
+api.add_resource(ProfileData, '/user/profile')
 
 # story / book related apis
 api.add_resource(AllStory, '/story')
@@ -59,13 +62,19 @@ api.add_resource(TestFunction, '/test/<book_id>')
 
 
 scheduler = APScheduler()
+<<<<<<< HEAD
+
+
+@scheduler.task('interval', id='my_task', seconds=5)
+=======
 @scheduler.task('interval', id='my_task', seconds=3)
+>>>>>>> main
 def check_status():
     check_book_status()
 
+
 if __name__ == '__main__':
 
-    
     with app.app_context():
         db_init()
     scheduler.start()

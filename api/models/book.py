@@ -14,8 +14,7 @@ class Book:
         comment_ids=[],
         liked_by_user_ids=[],
         interval_ids=create_time_intervals(now()),
-        created_at=now(),
-        updated_at=now(),
+        created_at=now()
     ):
         self.title = title
         self.cover = cover
@@ -26,7 +25,6 @@ class Book:
         self.liked_by_user_ids = liked_by_user_ids
         self.interval_ids = interval_ids
         self.created_at = created_at
-        self.updated_at = updated_at
         self.status = interval_ids[0]["status"]
         self.round = interval_ids[0]["round"]
 
@@ -107,7 +105,7 @@ class Book:
                     "pages": "$pages"
                 }
             },
-            
+
         ]
         result = db.books.aggregate(pipeline)
         # _id of result is book_id an ['pages'] is a list of pages
@@ -137,7 +135,8 @@ class Book:
     def push_new_page(book_id, page_id):
         book_oid = ObjectId(book_id)
         page_oid = ObjectId(page_id)
-        db.books.update_one({"_id": book_oid}, {"$push": {"page_ids": page_oid}})
+        db.books.update_one({"_id": book_oid}, {
+                            "$push": {"page_ids": page_oid}})
         book = db.books.find_one({"_id": book_oid})
         return book
 
@@ -166,6 +165,6 @@ class Book:
         user_oid = ObjectId(user_id)
         db.books.update_one({"_id": book_oid}, {
                             "$push": {"comment_ids": comment_oid}})
-        
+
         book = db.books.find_one({"_id": book_oid})
         return book

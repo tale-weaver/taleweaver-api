@@ -48,15 +48,20 @@ class AllStory(Resource):
 
 class SingleBook(Resource):
     def get(self, book_id):
+
         if book_id is None:
-            return {"msg": "Missing story fields"}, 400
+            return {"msg": "Missing book_id"}, 400
+
         book = Book.find_by_id(book_id)
+
         if not book:
-            return {"msg": "No book"}, 400
+            return {"msg": "No book found"}, 400
 
         num_likes = len(book["liked_by_user_ids"])
         num_comments = len(book["comment_ids"])
+
         status = book["status"]
+
         pages_winner = Book.find_winner_pages(book_id)
         if status == "voting" or "submitting":
             pages_status = Page.find_pages_by_bookid(book_id)
@@ -129,4 +134,3 @@ class TestFunction(Resource):
         book = Book.find_by_id(book_id)
         pages = Page.find_pages_by_bookid(book_id, book["status"])
         return {"msg": "success", "records": {"pages": pages}}, 200
-
